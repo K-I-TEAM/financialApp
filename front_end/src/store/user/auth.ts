@@ -17,7 +17,7 @@ Auth.configure({
   oauth: oauth,
   region: "eu-central-1",
   userPoolId: "eu-central-1_Y7Cnvtu17",
-  userPoolWebClientId: "5p7adfvdqea4ndn96vfinudcs8",
+  userPoolWebClientId: "5p7adfvdqea4ndn96vfinudcs8", // no secret
 });
 
 export default Auth;
