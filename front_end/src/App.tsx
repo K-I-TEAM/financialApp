@@ -49,23 +49,30 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="App">Happy days!!!</div>
-      <Navigation />
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="home" element={<Home />} />
-        <Route
-          path="dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NoMatch />} />
-      </Routes>
-    </Router>
+    <>
+      {isLoading ? null : (
+        <Router>
+          <div className="App">Happy days!!!</div>
+          <Navigation />
+          <Routes>
+            <Route index element={<Home isAuthenticated={isAuthenticated} />} />
+            <Route
+              path="home"
+              element={<Home isAuthenticated={isAuthenticated} />}
+            />
+            <Route
+              path="dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NoMatch />} />
+          </Routes>
+        </Router>
+      )}{" "}
+    </>
   );
 }
 
