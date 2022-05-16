@@ -4,3 +4,4 @@ export const defaultState = fromJS({
   testArray: ["Kate", "Yuri", "Maria"],
   loading: true,
 });
+export type DefaultStateType = typeof defaultState | null;
