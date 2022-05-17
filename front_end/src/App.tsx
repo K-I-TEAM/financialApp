@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
   Route,
@@ -9,17 +10,26 @@ import {
   useLocation,
 } from "react-router-dom";
 import Auth from "./store/user/auth";
+import { isAuthenticatedSelector } from "./selectors";
+import { signIn } from "./actions";
 import NoMatch from "./components/NoMatch";
 import Dashboard from "./components/Dashboard";
 import Home from "./components/Home";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
+  const dispatch = useDispatch();
   //temporary here
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    async function checkAuth() {
+    setIsLoading(true);
+    if (!isAuthenticated) {
+      dispatch(signIn());
+    }
+    setIsLoading(false);
+    /* async function checkAuth() {
       setIsLoading(true);
       try {
         await Auth.currentAuthenticatedUser();
@@ -29,8 +39,8 @@ function App() {
       }
       setIsLoading(false);
     }
-    checkAuth();
-  }, []);
+    checkAuth(); */
+  }, [isAuthenticated, dispatch]);
 
   interface PrivateRouteProps extends RouteProps {
     // tslint:disable-next-line:no-any

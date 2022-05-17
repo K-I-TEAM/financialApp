@@ -5,8 +5,9 @@ const Dashboard = (props: any) => {
   useEffect(() => {
     async function getUser() {
       const session = await Auth.currentSession();
+      const user = await Auth.currentAuthenticatedUser();
       setUser(session.getIdToken().decodePayload().name);
-      console.log(session);
+      console.log(user);
     }
     getUser();
   }, []);
