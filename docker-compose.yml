@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: ./front_end #where we have the Dockerfile (frontend)
+    ports:
+      - 3000:3000 #port3000 of the host - port 3000 of the container
+    volumes:
+      - ./front_end:/app
+  backend:
+    build: ./back_end #where we have the Dockerfile (backend)
+    ports:
+      - 3001:3001 #port3000 of the host - port 3000 of the container
+    volumes:
+      - ./back_end:/app
