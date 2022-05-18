@@ -1,17 +1,21 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
+import { useSelector } from "react-redux";
+
 import Auth from "./../store/user/auth";
+import { isAuthenticatedSelector } from "../selectors";
 
 const Home = (props: any) => {
   const navigate = useNavigate();
   const location: any = useLocation();
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
 
   useEffect(() => {
-    if (props.isAuthenticated) {
+    if (isAuthenticated) {
       const origin = location.state?.from?.pathname || "/dashboard";
       navigate(origin);
     }
-  }, [props.isAuthenticated, location.state?.from?.pathname, navigate]);
+  }, [isAuthenticated, location.state?.from?.pathname, navigate]);
   return (
     <>
       {" "}

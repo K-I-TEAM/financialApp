@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Auth from "./../store/user/auth";
-const Dashboard = (props: any) => {
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    async function getUser() {
-      const session = await Auth.currentSession();
-      const user = await Auth.currentAuthenticatedUser();
-      setUser(session.getIdToken().decodePayload().name);
-      console.log(user);
-    }
-    getUser();
-  }, []);
+import React from "react";
+import { useSelector } from "react-redux";
+
+import { userSelector } from "../selectors";
+const Dashboard = () => {
+  const user = useSelector(userSelector);
   return (
     <>
       {" "}
       <h2>Dashboard component (protected)</h2>
-      <div>Authenticated as {user}</div>
+      <div>Authenticated as {user.name}</div>
     </>
   );
 };

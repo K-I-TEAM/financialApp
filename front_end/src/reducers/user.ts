@@ -5,7 +5,7 @@ import { AppStateType } from "../combineReducers";
 type ActionType = {
   user: Object;
 };
-export const setUser = createReducer(null, {
+export const user = createReducer(null, {
   [SET_USER](state: AppStateType, { user }: ActionType) {
     return fromJS(user);
   },

@@ -6,5 +6,6 @@ export const defaultState = fromJS({
     email: null as string | null,
     name: null as string | null,
   },
+  isLoading: true,
 });
 export type DefaultStateType = typeof defaultState | null;

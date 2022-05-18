@@ -1,3 +1,3 @@
-export { loading } from "./loading";
-export { setIsAuthenticated } from "./setIsAuthenticated";
-export { setUser } from "./setUser";
+export { isLoading } from "./isLoading";
+export { isAuthenticated } from "./isAuthenticated";
+export { user } from "./user";

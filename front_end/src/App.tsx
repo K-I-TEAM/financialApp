@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
@@ -9,37 +9,21 @@ import {
   NavLink,
   useLocation,
 } from "react-router-dom";
-import Auth from "./store/user/auth";
-import { isAuthenticatedSelector } from "./selectors";
-import { signIn } from "./actions";
+import { isAuthenticatedSelector, isLoadingSelector } from "./selectors";
+import { signIn, signOut } from "./actions";
 import NoMatch from "./components/NoMatch";
 import Dashboard from "./components/Dashboard";
 import Home from "./components/Home";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
   const isAuthenticated = useSelector(isAuthenticatedSelector);
+  const isLoading = useSelector(isLoadingSelector);
   const dispatch = useDispatch();
-  //temporary here
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
     if (!isAuthenticated) {
       dispatch(signIn());
     }
-    setIsLoading(false);
-    /* async function checkAuth() {
-      setIsLoading(true);
-      try {
-        await Auth.currentAuthenticatedUser();
-        setIsAuthenticated(true);
-      } catch (err) {
-        setIsAuthenticated(false);
-      }
-      setIsLoading(false);
-    }
-    checkAuth(); */
   }, [isAuthenticated, dispatch]);
 
   interface PrivateRouteProps extends RouteProps {
@@ -60,16 +44,16 @@ function App() {
 
   return (
     <>
+      {isAuthenticated ? (
+        <button onClick={() => dispatch(signOut())}>Sign Out</button>
+      ) : null}
       {isLoading ? null : (
         <Router>
           <div className="App">Happy days!!!</div>
           <Navigation />
           <Routes>
-            <Route index element={<Home isAuthenticated={isAuthenticated} />} />
-            <Route
-              path="home"
-              element={<Home isAuthenticated={isAuthenticated} />}
-            />
+            <Route index element={<Home />} />
+            <Route path="home" element={<Home />} />
             <Route
               path="dashboard"
               element={
