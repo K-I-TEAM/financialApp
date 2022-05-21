@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Auth from "./../store/user/auth";
 import { isAuthenticatedSelector } from "../selectors";
 
-const Home = (props: any) => {
+const Home: React.FC = () => {
   const navigate = useNavigate();
   const location: any = useLocation();
   const isAuthenticated = useSelector(isAuthenticatedSelector);

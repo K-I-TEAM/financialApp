@@ -6,7 +6,6 @@ import {
   Navigate,
   RouteProps,
   Routes,
-  NavLink,
   useLocation,
 } from "react-router-dom";
 import { isAuthenticatedSelector, isLoadingSelector } from "./selectors";
@@ -14,6 +13,10 @@ import { signIn, signOut } from "./actions";
 import NoMatch from "./components/NoMatch";
 import Dashboard from "./components/Dashboard";
 import Home from "./components/Home";
+import NavBar from "./components/UI/NavBar";
+import Transactions from "./components/Transactions";
+import Profile from "./components/Profile";
+import { Paper } from "@mui/material";
 
 function App() {
   const isAuthenticated = useSelector(isAuthenticatedSelector);
@@ -44,39 +47,53 @@ function App() {
 
   return (
     <>
-      {isAuthenticated ? (
-        <button onClick={() => dispatch(signOut())}>Sign Out</button>
-      ) : null}
       {isLoading ? null : (
         <Router>
-          <div className="App">Happy days!!!</div>
-          <Navigation />
-          <Routes>
-            <Route index element={<Home />} />
-            <Route path="home" element={<Home />} />
-            <Route
-              path="dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<NoMatch />} />
-          </Routes>
+          {" "}
+          {isAuthenticated ? <NavBar /> : null}
+          <Paper
+            elevation={6}
+            sx={{ height: "100vh", maxWidth: "375px", mx: "auto", px: "10px" }}
+          >
+            {isAuthenticated ? (
+              <button onClick={() => dispatch(signOut())}>Sign Out</button>
+            ) : null}
+
+            <div className="App">Happy days!!!</div>
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path="home" element={<Home />} />
+              <Route
+                path="dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="transactions"
+                element={
+                  <ProtectedRoute>
+                    <Transactions />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<NoMatch />} />
+            </Routes>
+          </Paper>
         </Router>
       )}{" "}
     </>
   );
 }
-
-const Navigation = () => {
-  return (
-    <nav>
-      <NavLink to="/home">Home</NavLink>
-      <NavLink to="/dashboard">Dashboard</NavLink>
-    </nav>
-  );
-};
 
 export default App;
