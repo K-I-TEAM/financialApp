@@ -6,14 +6,17 @@ import {
   Navigate,
   RouteProps,
   Routes,
-  NavLink,
   useLocation,
 } from "react-router-dom";
+import { Paper } from "@mui/material";
+
 import { isAuthenticatedSelector, isLoadingSelector } from "./selectors";
 import { signIn, signOut } from "./actions";
 import NoMatch from "./components/NoMatch";
-import Dashboard from "./components/Dashboard";
 import Home from "./components/Home";
+import NavBar from "./components/UI/NavBar";
+import { routes, RouteType } from "./routs";
+import { container } from "./styles";
 
 function App() {
   const isAuthenticated = useSelector(isAuthenticatedSelector);
@@ -26,57 +29,54 @@ function App() {
     }
   }, [isAuthenticated, dispatch]);
 
-  interface PrivateRouteProps extends RouteProps {
-    // tslint:disable-next-line:no-any
-    component?: any;
-    // tslint:disable-next-line:no-any
-    children?: any;
+  interface ParentCompProps {
+    childComp?: React.ReactNode;
+    isPrivate?: Boolean;
   }
-  const ProtectedRoute = ({ children }: PrivateRouteProps) => {
+
+  const CustomRoute = ({ isPrivate, childComp }: ParentCompProps) => {
     const location = useLocation();
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated && isPrivate) {
       return <Navigate to="/home" replace state={{ from: location }} />;
     }
 
-    return children;
+    return <>{childComp}</>;
   };
 
   return (
     <>
-      {isAuthenticated ? (
-        <button onClick={() => dispatch(signOut())}>Sign Out</button>
-      ) : null}
       {isLoading ? null : (
         <Router>
-          <div className="App">Happy days!!!</div>
-          <Navigation />
-          <Routes>
-            <Route index element={<Home />} />
-            <Route path="home" element={<Home />} />
-            <Route
-              path="dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<NoMatch />} />
-          </Routes>
+          {" "}
+          {isAuthenticated ? <NavBar /> : null}
+          <Paper elevation={6} sx={container}>
+            {isAuthenticated ? (
+              <button onClick={() => dispatch(signOut())}>Sign Out</button>
+            ) : null}
+
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path="home" element={<Home />} />
+              {routes.map((el: RouteType, index: number) => (
+                <Route
+                  path={el.path}
+                  element={
+                    <CustomRoute
+                      childComp={el.element}
+                      isPrivate={el.protected}
+                    />
+                  }
+                  key={index}
+                />
+              ))}
+              <Route path="*" element={<NoMatch />} />
+            </Routes>
+          </Paper>
         </Router>
       )}{" "}
     </>
   );
 }
-
-const Navigation = () => {
-  return (
-    <nav>
-      <NavLink to="/home">Home</NavLink>
-      <NavLink to="/dashboard">Dashboard</NavLink>
-    </nav>
-  );
-};
 
 export default App;
