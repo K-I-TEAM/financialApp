@@ -11,12 +11,10 @@ import {
 import { isAuthenticatedSelector, isLoadingSelector } from "./selectors";
 import { signIn, signOut } from "./actions";
 import NoMatch from "./components/NoMatch";
-import Dashboard from "./components/Dashboard";
 import Home from "./components/Home";
 import NavBar from "./components/UI/NavBar";
-import Transactions from "./components/Transactions";
-import Profile from "./components/Profile";
 import { Paper } from "@mui/material";
+import { routes, RouteType } from "./routs";
 
 function App() {
   const isAuthenticated = useSelector(isAuthenticatedSelector);
@@ -34,11 +32,13 @@ function App() {
     component?: any;
     // tslint:disable-next-line:no-any
     children?: any;
+    isPrivate?: Boolean;
   }
-  const ProtectedRoute = ({ children }: PrivateRouteProps) => {
+
+  const CustomRoute = ({ children, isPrivate = true }: PrivateRouteProps) => {
     const location = useLocation();
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated && isPrivate) {
       return <Navigate to="/home" replace state={{ from: location }} />;
     }
 
@@ -59,34 +59,16 @@ function App() {
               <button onClick={() => dispatch(signOut())}>Sign Out</button>
             ) : null}
 
-            <div className="App">Happy days!!!</div>
             <Routes>
               <Route index element={<Home />} />
               <Route path="home" element={<Home />} />
-              <Route
-                path="dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="transactions"
-                element={
-                  <ProtectedRoute>
-                    <Transactions />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
+              {routes.map((el: RouteType, index: number) => (
+                <Route
+                  path={el.path}
+                  element={<CustomRoute>{el.element}</CustomRoute>}
+                  key={index}
+                />
+              ))}
               <Route path="*" element={<NoMatch />} />
             </Routes>
           </Paper>
