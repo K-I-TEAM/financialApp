@@ -1,12 +1,10 @@
 import React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import HomeIcon from "@mui/icons-material/Home";
-import AlignHorizontalLeftIcon from "@mui/icons-material/AlignHorizontalLeft";
-import PersonPinIcon from "@mui/icons-material/PersonPin";
 import { Link } from "react-router-dom";
 import { Box } from "@mui/system";
 
+import { navbarTabArray, NavbarTabType } from "../../settings";
 import { navbar, navbarTab } from "../../styles";
 
 const NavBar: React.FC = () => {
@@ -25,30 +23,17 @@ const NavBar: React.FC = () => {
         aria-label="icon tabs example"
         onChange={handleChange}
       >
-        <Tab
-          icon={<HomeIcon />}
-          aria-label="dashboard"
-          label="Dashboard"
-          sx={navbarTab}
-          component={Link}
-          to="/dashboard"
-        />
-        <Tab
-          icon={<AlignHorizontalLeftIcon />}
-          aria-label="transactions"
-          label="Transactions"
-          sx={navbarTab}
-          component={Link}
-          to="/transactions"
-        />
-        <Tab
-          icon={<PersonPinIcon />}
-          aria-label="person"
-          label="Profile"
-          sx={navbarTab}
-          component={Link}
-          to="/profile"
-        />
+        {navbarTabArray.map((el: NavbarTabType, index: number) => (
+          <Tab
+            key={index}
+            icon={<el.icon />}
+            aria-label={el.ariaLabel}
+            label={el.label}
+            sx={navbarTab}
+            component={Link}
+            to={el.to}
+          />
+        ))}
       </Tabs>
     </Box>
   );
