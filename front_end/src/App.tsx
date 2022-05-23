@@ -27,22 +27,19 @@ function App() {
     }
   }, [isAuthenticated, dispatch]);
 
-  interface PrivateRouteProps extends RouteProps {
-    // tslint:disable-next-line:no-any
-    component?: any;
-    // tslint:disable-next-line:no-any
-    children?: any;
+  interface ParentCompProps {
+    childComp?: React.ReactNode;
     isPrivate?: Boolean;
   }
 
-  const CustomRoute = ({ children, isPrivate = true }: PrivateRouteProps) => {
+  const CustomRoute = ({ isPrivate, childComp }: ParentCompProps) => {
     const location = useLocation();
 
     if (!isAuthenticated && isPrivate) {
       return <Navigate to="/home" replace state={{ from: location }} />;
     }
 
-    return children;
+    return <>{childComp}</>;
   };
 
   return (
@@ -65,7 +62,12 @@ function App() {
               {routes.map((el: RouteType, index: number) => (
                 <Route
                   path={el.path}
-                  element={<CustomRoute>{el.element}</CustomRoute>}
+                  element={
+                    <CustomRoute
+                      childComp={el.element}
+                      isPrivate={el.protected}
+                    />
+                  }
                   key={index}
                 />
               ))}
