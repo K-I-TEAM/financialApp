@@ -5,6 +5,7 @@ import { Chart, ArcElement, registerables } from "chart.js";
 import { Box } from "@mui/system";
 
 import { userSelector } from "../selectors";
+import DashboardChart from "./DashboardChart";
 Chart.register(...registerables);
 Chart.register(ArcElement);
 const Dashboard: React.FC = () => {
@@ -13,8 +14,9 @@ const Dashboard: React.FC = () => {
   return (
     <>
       {" "}
+      <DashboardChart />
       <Box sx={{ width: "80%", mx: "auto" }}>
-        <Doughnut
+        {/*    <Doughnut
           data={{
             labels: ["one", "two", "tree"],
             datasets: [
@@ -50,7 +52,7 @@ const Dashboard: React.FC = () => {
               },
             },
           }}
-        />
+        /> */}
       </Box>
     </>
   );
