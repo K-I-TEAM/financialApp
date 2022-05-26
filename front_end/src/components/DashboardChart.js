@@ -1,6 +1,9 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, registerables } from "chart.js";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { Box } from "@mui/system";
 
 Chart.register(...registerables);
 Chart.register(ArcElement);
@@ -37,18 +40,7 @@ const options = {
     legend: {
       display: false,
     },
-    subtitle: {
-      display: true,
-      text: "2098.89 $",
-      font: {
-        size: 20,
-      },
-      padding: { bottom: 10 },
-    },
-    title: {
-      display: true,
-      text: "Balance",
-    },
+
     textinside: {
       center: {
         text: getTotal,
@@ -156,6 +148,22 @@ const DashboardChart = () => {
     },
   });
 
-  return <Doughnut data={data} options={options} />;
+  return (
+    <Box display="flex" justifyContent="center">
+      <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
+        <Box>
+          <ArrowBackIosNewIcon fontSize="small" />
+        </Box>
+      </Box>
+      <Box width="70%">
+        <Doughnut data={data} options={options} />
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
+        <Box>
+          <ArrowForwardIosIcon fontSize="small" />
+        </Box>
+      </Box>
+    </Box>
+  );
 };
 export default DashboardChart;

@@ -6,7 +6,13 @@ const Dashboard: React.FC = () => {
   return (
     <>
       {" "}
-      <Box sx={{ width: "80%", mx: "auto" }}>
+      <Box>
+        <Box textAlign="center" sx={{ py: 2 }}>
+          Balance
+        </Box>
+        <Box textAlign="center" fontWeight="bold" sx={{ pb: 2 }}>
+          23456.78 $
+        </Box>
         <DashboardChart />
       </Box>
     </>
