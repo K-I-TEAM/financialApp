@@ -8,18 +8,23 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { Provider } from "react-redux";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+
 import { getStore } from "./getStore";
+import { THEME } from "./settings";
 const store = getStore();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </Provider>
+  <MuiThemeProvider theme={THEME}>
+    <Provider store={store}>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </Provider>
+  </MuiThemeProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
