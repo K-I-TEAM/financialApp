@@ -1,11 +1,12 @@
 import React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import { Link } from "react-router-dom";
 import { Box } from "@mui/system";
 
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+
 import { navbarTabArray, NavbarTabType } from "../../settings";
-import { navbar, navbarTab } from "../../styles";
+import { navbar } from "../../styles";
 
 const NavBar: React.FC = () => {
   const [value, setValue] = React.useState(0);
@@ -15,26 +16,19 @@ const NavBar: React.FC = () => {
   };
   return (
     <Box sx={navbar}>
-      <Tabs
-        value={value}
-        centered
-        //variant="scrollable"
-        scrollButtons="auto"
-        aria-label="icon tabs example"
-        onChange={handleChange}
-      >
+      <BottomNavigation showLabels value={value} onChange={handleChange}>
+        {" "}
         {navbarTabArray.map((el: NavbarTabType, index: number) => (
-          <Tab
+          <BottomNavigationAction
             key={index}
             icon={<el.icon />}
             aria-label={el.ariaLabel}
             label={el.label}
-            sx={navbarTab}
             component={Link}
             to={el.to}
           />
         ))}
-      </Tabs>
+      </BottomNavigation>
     </Box>
   );
 };

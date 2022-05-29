@@ -49,8 +49,8 @@ function App() {
       {isLoading ? null : (
         <Router>
           {" "}
-          {isAuthenticated ? <NavBar /> : null}
           <Paper elevation={6} sx={container}>
+            {isAuthenticated ? <NavBar /> : null}
             {isAuthenticated ? (
               <button onClick={() => dispatch(signOut())}>Sign Out</button>
             ) : null}

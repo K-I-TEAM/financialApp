@@ -11,12 +11,16 @@ import Avatar from "@mui/material/Avatar";
 import ListItemText from "@mui/material/ListItemText";
 import { Box } from "@mui/system";
 import Brightness1Icon from "@mui/icons-material/Brightness1";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 
 import WideSwitch from "./WideSwitch";
+import MonthSwitcher from "./UI/MonthSwitcher";
 
 const Transactions: React.FC = () => {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = React.useState(true);
+  const [currency, setCurrency] = React.useState("EUR");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -25,6 +29,25 @@ const Transactions: React.FC = () => {
   const handleClick = () => {
     setOpen(!open);
   };
+  const currencies = [
+    {
+      value: "USD",
+      label: "$",
+    },
+    {
+      value: "EUR",
+      label: "€",
+    },
+    {
+      value: "BTC",
+      label: "฿",
+    },
+    {
+      value: "JPY",
+      label: "¥",
+    },
+  ];
+
   return (
     <div>
       <Box>
@@ -40,6 +63,28 @@ const Transactions: React.FC = () => {
             onChange={handleChange}
             //  inputProps={{ "aria-label": "controlled" }}
           />
+        </Box>
+        <Box display="flex" justifyContent="center">
+          <MonthSwitcher />
+        </Box>
+        <Box textAlign="center">
+          <TextField
+            id="standard-select-currency-native"
+            select
+            value={currency}
+            onChange={handleChange}
+            SelectProps={{
+              native: true,
+            }}
+            helperText="Please select your currency"
+            variant="standard"
+          >
+            {currencies.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </TextField>
         </Box>
       </Box>
       <List>
