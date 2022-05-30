@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 import { sequelize } from '../database/index.js';
 
 const Transaction = sequelize.define(
@@ -7,7 +7,7 @@ const Transaction = sequelize.define(
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
     },
     date: {
       type: DataTypes.DATE,
@@ -16,16 +16,18 @@ const Transaction = sequelize.define(
     description: {
       type: DataTypes.STRING,
     },
+    type: {
+      type: DataTypes.ENUM('income', 'expense'),
+      allowNull: false,
+    },
     amount: {
       type: DataTypes.DECIMAL(10, 2),
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: false,
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: false,
     },
     deleted_by: {
       type: DataTypes.UUID,

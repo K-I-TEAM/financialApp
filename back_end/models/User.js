@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 import { sequelize } from '../database/index.js';
 import { Account } from './Account.js';
 import { Category } from './Category.js';
@@ -9,7 +9,7 @@ const User = sequelize.define(
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
     },
     name: {
       type: DataTypes.STRING,
@@ -41,11 +41,9 @@ const User = sequelize.define(
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: false,
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: false,
     },
     deleted_by: {
       type: DataTypes.UUID,
@@ -59,6 +57,8 @@ const User = sequelize.define(
     updatedAt: 'updated_at',
   }
 );
+
+//Relationships
 
 User.hasMany(Category, {
   foreignKey: 'user_id',
