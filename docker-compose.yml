@@ -9,7 +9,38 @@ services:
       - ./front_end:/app
   backend:
     build: ./back_end #where we have the Dockerfile (backend)
+    depends_on:
+      - db
     ports:
-      - 3001:3001 #port3000 of the host - port 3000 of the container
+      - 3001:3001 #port3001 of the host - port 3001 of the container
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+    links:
+      - db
     volumes:
       - ./back_end:/app
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: isaialbarran@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+volumes:
+  db:
+    driver: local
