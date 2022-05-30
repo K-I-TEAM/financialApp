@@ -9,6 +9,7 @@ export type NavbarTabType = {
   ariaLabel: string;
   label: string;
   to: string;
+  //oldIndex?: number;
 };
 
 export const navbarTabArray: Array<NavbarTabType> = [
