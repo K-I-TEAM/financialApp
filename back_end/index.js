@@ -1,16 +1,15 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import app from './app.js';
 import { sequelize } from './database/index.js';
 import './models/index.js';
 
 dotenv.config();
 
-const app = express();
 const port = process.env.PORT || 3001;
 
 const main = async () => {
   try {
-    await sequelize.sync({ force: true, alter: true });
+    await sequelize.sync();
     await sequelize.authenticate();
 
     console.log('Connection has been established successfully.');
