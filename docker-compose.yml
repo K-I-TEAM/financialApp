@@ -19,6 +19,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: postgres
+      #DATABASE_URL: postgres://postgress:postgres@db:5432/db
     links:
       - db
     volumes:
