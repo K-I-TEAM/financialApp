@@ -10,6 +10,9 @@ const Category = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
+    parent_id: {
+      type: DataTypes.UUID,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -18,6 +21,12 @@ const Category = sequelize.define(
     description: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    icon: {
+      type: DataTypes.STRING,
+    },
+    color: {
+      type: DataTypes.STRING,
     },
     created_by: {
       type: DataTypes.UUID,
@@ -48,6 +57,10 @@ Category.hasMany(Transaction, {
 Transaction.belongsTo(Category, {
   foreignKey: 'category_id',
   targetKey: 'id',
+});
+
+Category.hasMany(Category, {
+  foreignKey: 'parent_id',
 });
 
 export { Category };
