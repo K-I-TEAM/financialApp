@@ -10,9 +10,6 @@ const Category = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
-    parent_id: {
-      type: DataTypes.UUID,
-    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -57,10 +54,6 @@ Category.hasMany(Transaction, {
 Transaction.belongsTo(Category, {
   foreignKey: 'category_id',
   targetKey: 'id',
-});
-
-Category.hasMany(Category, {
-  foreignKey: 'parent_id',
 });
 
 export { Category };
