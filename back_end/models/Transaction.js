@@ -23,6 +23,9 @@ const Transaction = sequelize.define(
     amount: {
       type: DataTypes.DECIMAL(10, 2),
     },
+    currency: {
+      type: DataTypes.STRING(3),
+    },
     created_by: {
       type: DataTypes.UUID,
     },

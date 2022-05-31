@@ -19,6 +19,12 @@ const Category = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    icon: {
+      type: DataTypes.STRING,
+    },
+    color: {
+      type: DataTypes.STRING,
+    },
     created_by: {
       type: DataTypes.UUID,
     },
