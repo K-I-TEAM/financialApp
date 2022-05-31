@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 import { sequelize } from '../database/index.js';
 import { Transaction } from './Transaction.js';
 
@@ -8,7 +8,7 @@ const Account = sequelize.define(
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
     },
     name: {
       type: DataTypes.STRING,
@@ -21,11 +21,9 @@ const Account = sequelize.define(
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: false,
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: false,
     },
     deleted_by: {
       type: DataTypes.UUID,
