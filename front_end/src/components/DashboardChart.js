@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, registerables } from "chart.js";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { Box } from "@mui/system";
+import { IconButton } from "@mui/material";
 
 import { currentDateSelector } from "./../selectors";
 import { setCurrentDate } from "./../actions";
@@ -52,7 +53,7 @@ const options = {
     textinside: {
       center: {
         text: getTotal,
-        date: getMonthYearDate,
+        date: getMonthYearDate(new Date()),
         color: "#000000", // Default is #000000
         fontStyle: "Arial", // Default is Arial
         sidePadding: 20, // Default is 20 (as a percentage)
@@ -65,7 +66,7 @@ const options = {
 const DashboardChart = () => {
   const currentDate = useSelector(currentDateSelector);
   const dispatch = useDispatch();
-
+  const [chartOptions, setChartOptions] = useState(options);
   Chart.register({
     id: "textinside",
     beforeDraw: function (chart) {
@@ -76,7 +77,7 @@ const DashboardChart = () => {
         const centerConfig = chart.config.options.plugins.textinside.center;
         const fontStyle = centerConfig.fontStyle || "Arial";
         const txt = centerConfig.text(chart);
-        const date = centerConfig.date(currentDate);
+        const date = centerConfig.date;
         const color = centerConfig.color || "#000";
         const maxFontSize = centerConfig.maxFontSize || 75;
         const sidePadding = centerConfig.sidePadding || 20;
@@ -168,27 +169,43 @@ const DashboardChart = () => {
     console.log("new date: ", getMonthYearDate(newDate));
     dispatch(setCurrentDate(newDate));
   };
+  useEffect(() => {
+    const newChartDate = getMonthYearDate(currentDate);
+    setChartOptions({
+      cutout: "80%",
+      plugins: {
+        legend: {
+          display: false,
+        },
 
+        textinside: {
+          center: {
+            text: getTotal,
+            date: newChartDate,
+            color: "#000000", // Default is #000000
+            fontStyle: "Arial", // Default is Arial
+            sidePadding: 20, // Default is 20 (as a percentage)
+            minFontSize: 25, // Default is 20 (in px), set to false and text will not wrap.
+            lineHeight: 40, // Default is 25 (in px), used for when text wraps
+          }, //chart.config.options.elements.center;
+        },
+      },
+    });
+  }, [currentDate]);
   return (
     <Box display="flex" justifyContent="center">
       <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
-        <Box>
-          <ArrowBackIosNewIcon
-            fontSize="small"
-            onClick={() => changeCurrentDateHandler(-1)}
-          />
-        </Box>
+        <IconButton onClick={() => changeCurrentDateHandler(-1)}>
+          <ArrowBackIosNewIcon fontSize="small" />
+        </IconButton>
       </Box>
       <Box width="70%">
-        <Doughnut data={data} options={options} />
+        <Doughnut data={data} options={chartOptions} />
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
-        <Box>
-          <ArrowForwardIosIcon
-            fontSize="small"
-            onClick={() => changeCurrentDateHandler(1)}
-          />
-        </Box>
+        <IconButton onClick={() => changeCurrentDateHandler(1)}>
+          <ArrowForwardIosIcon fontSize="small" />
+        </IconButton>
       </Box>
     </Box>
   );
