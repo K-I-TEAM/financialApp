@@ -10,3 +10,4 @@ export {
   SET_USER,
   setUser,
 } from "./auth";
+export { setCurrentDate, SET_CURRENTDATE } from "./account";

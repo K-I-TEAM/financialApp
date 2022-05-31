@@ -1,12 +1,20 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, registerables } from "chart.js";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { Box } from "@mui/system";
 
+import { currentDateSelector } from "./../selectors";
+import { setCurrentDate } from "./../actions";
+
 Chart.register(...registerables);
 Chart.register(ArcElement);
+
+const getMonthYearDate = (date) => {
+  return date.toLocaleString("en-us", { month: "long", year: "numeric" });
+};
 
 const getTotal = function (myDoughnutChart) {
   const sum = myDoughnutChart.config.data.datasets[0].data.reduce(
@@ -44,6 +52,7 @@ const options = {
     textinside: {
       center: {
         text: getTotal,
+        date: getMonthYearDate,
         color: "#000000", // Default is #000000
         fontStyle: "Arial", // Default is Arial
         sidePadding: 20, // Default is 20 (as a percentage)
@@ -54,6 +63,9 @@ const options = {
   },
 };
 const DashboardChart = () => {
+  const currentDate = useSelector(currentDateSelector);
+  const dispatch = useDispatch();
+
   Chart.register({
     id: "textinside",
     beforeDraw: function (chart) {
@@ -64,6 +76,7 @@ const DashboardChart = () => {
         const centerConfig = chart.config.options.plugins.textinside.center;
         const fontStyle = centerConfig.fontStyle || "Arial";
         const txt = centerConfig.text(chart);
+        const date = centerConfig.date(currentDate);
         const color = centerConfig.color || "#000";
         const maxFontSize = centerConfig.maxFontSize || 75;
         const sidePadding = centerConfig.sidePadding || 20;
@@ -132,7 +145,7 @@ const DashboardChart = () => {
         ctx.font = "bold 20px " + fontStyle;
         ctx.fillText(txt, centerX, centerY - lineHeight);
         ctx.font = "16px " + fontStyle;
-        ctx.fillText("November 2020", centerX, centerY);
+        ctx.fillText(date, centerX, centerY);
 
         // Move the center up depending on line height and number of lines
         //centerY -= (lines.length / 2) * lineHeight;
@@ -147,12 +160,23 @@ const DashboardChart = () => {
       }
     },
   });
+  const changeCurrentDateHandler = (increment) => {
+    const date = currentDate;
+    date.setDate(1);
+    console.log("date: ", date);
+    const newDate = new Date(date.setMonth(date.getMonth() + increment));
+    console.log("new date: ", getMonthYearDate(newDate));
+    dispatch(setCurrentDate(newDate));
+  };
 
   return (
     <Box display="flex" justifyContent="center">
       <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
         <Box>
-          <ArrowBackIosNewIcon fontSize="small" />
+          <ArrowBackIosNewIcon
+            fontSize="small"
+            onClick={() => changeCurrentDateHandler(-1)}
+          />
         </Box>
       </Box>
       <Box width="70%">
@@ -160,7 +184,10 @@ const DashboardChart = () => {
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
         <Box>
-          <ArrowForwardIosIcon fontSize="small" />
+          <ArrowForwardIosIcon
+            fontSize="small"
+            onClick={() => changeCurrentDateHandler(1)}
+          />
         </Box>
       </Box>
     </Box>
