@@ -39,7 +39,7 @@ export type TransactionTypeType = "expense" | "income";
 export type CategoryType = {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   colour: string;
   icon: string;
 };

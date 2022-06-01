@@ -1,0 +1,85 @@
+{
+  "categories": [
+    {
+      "id": "0",
+      "name": "Home",
+      "colour": "#ff8000",
+      "icon": "AccountBalanceIcon"
+    },
+    {
+      "id": "1",
+      "name": "Trevelings",
+      "colour": "#00bfff",
+      "icon": "CardTravelIcon"
+    },
+    {
+      "id": "2",
+      "name": "Food",
+      "colour": "#bf00ff",
+      "icon": "RestaurantIcon"
+    },
+    {
+      "id": "3",
+      "name": "Car",
+      "colour": "#9f40bf",
+      "icon": "ElectricCarIcon"
+    },
+    {
+      "id": "999",
+      "name": "Income",
+      "colour": "#bf4040",
+      "icon": "CreditCardIcon"
+    }
+  ],
+  "balance": 23456.67,
+  "transactions": [
+    {
+      "id": 0,
+      "date": "01.06.2022",
+      "type": "expense",
+      "description": "timing belt",
+      "category": "3",
+      "amount": 356
+    },
+    {
+      "id": 1,
+      "date": "01.06.2022",
+      "type": "income",
+      "description": "salary",
+      "category": "999",
+      "amount": 3567
+    },
+    {
+      "id": 2,
+      "date": "02.06.2022",
+      "type": "income",
+      "description": "freelance",
+      "category": "999",
+      "amount": 556
+    },
+    {
+      "id": 3,
+      "date": "03.06.2022",
+      "type": "expense",
+      "description": "pizza",
+      "category": "2",
+      "amount": 24
+    },
+    {
+      "id": 3,
+      "date": "05.06.2022",
+      "type": "expense",
+      "description": "towels",
+      "category": "0",
+      "amount": 8
+    },
+    {
+      "id": 3,
+      "date": "05.06.2022",
+      "type": "expense",
+      "description": "cookie jar",
+      "category": "0",
+      "amount": 15
+    }
+  ]
+}
