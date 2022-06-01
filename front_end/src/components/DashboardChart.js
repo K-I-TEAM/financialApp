@@ -63,7 +63,7 @@ const options = {
     },
   },
 };
-const DashboardChart = () => {
+const DashboardChart = ({ transactions }) => {
   const currentDate = useSelector(currentDateSelector);
   const dispatch = useDispatch();
   const [chartOptions, setChartOptions] = useState(options);
