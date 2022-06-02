@@ -12,7 +12,6 @@ import ListItemText from "@mui/material/ListItemText";
 import { Box } from "@mui/system";
 import Brightness1Icon from "@mui/icons-material/Brightness1";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
 
 import WideSwitch from "./WideSwitch";
 import MonthSwitcher from "./UI/MonthSwitcher";

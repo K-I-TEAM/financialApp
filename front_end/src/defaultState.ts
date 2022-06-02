@@ -11,8 +11,9 @@ const defaultUserState = {
     picture_url: null as string | null,
     gender: "male" as GenderType,
     slug: null as string | null,
+    categories: [] as Array<CategoryType>,
   },
-  categories: [] as Array<CategoryType>,
+
   isLoading: true,
 };
 const defaultAccountState = {

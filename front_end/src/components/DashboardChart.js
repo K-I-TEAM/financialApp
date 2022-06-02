@@ -9,6 +9,7 @@ import { IconButton } from "@mui/material";
 
 import { currentDateSelector } from "./../selectors";
 import { setCurrentDate } from "./../actions";
+import { calculateTransactions } from "./../helpers";
 
 Chart.register(...registerables);
 Chart.register(ArcElement);
@@ -25,16 +26,12 @@ const getTotal = function (myDoughnutChart) {
   return `${sum} $`;
 };
 const data = {
-  labels: ["one", "two", "tree"],
+  labels: [],
   datasets: [
     {
       label: "My First Dataset",
-      data: [300, 50, 100],
-      backgroundColor: [
-        "rgb(255, 99, 132)",
-        "rgb(54, 162, 235)",
-        "rgb(255, 205, 86)",
-      ],
+      data: [],
+      backgroundColor: [],
       hoverOffset: 4,
       // borderWidth: 30,
       spacing: 0,
@@ -63,10 +60,11 @@ const options = {
     },
   },
 };
-const DashboardChart = ({ transactions }) => {
+const DashboardChart = ({ transactions, categories }) => {
   const currentDate = useSelector(currentDateSelector);
   const dispatch = useDispatch();
   const [chartOptions, setChartOptions] = useState(options);
+  const [chartData, setChartData] = useState(data);
   Chart.register({
     id: "textinside",
     beforeDraw: function (chart) {
@@ -171,6 +169,28 @@ const DashboardChart = ({ transactions }) => {
   };
   useEffect(() => {
     const newChartDate = getMonthYearDate(currentDate);
+    const calculatedCategories = calculateTransactions(
+      transactions,
+      categories,
+      "expense"
+    );
+    const labels = calculatedCategories.map((category) => category.name);
+    const data = calculatedCategories.map((category) => category.total);
+    const backgrounds = calculatedCategories.map((category) => category.colour);
+    setChartData({
+      labels: [...labels],
+      datasets: [
+        {
+          label: "My First Dataset",
+          data: [...data],
+          backgroundColor: [...backgrounds],
+          hoverOffset: 4,
+          // borderWidth: 30,
+          spacing: 0,
+          rotation: 40,
+        },
+      ],
+    });
     setChartOptions({
       cutout: "80%",
       plugins: {
@@ -191,7 +211,7 @@ const DashboardChart = ({ transactions }) => {
         },
       },
     });
-  }, [currentDate]);
+  }, [currentDate, transactions, categories]);
   return (
     <Box display="flex" justifyContent="center">
       <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
@@ -200,7 +220,7 @@ const DashboardChart = ({ transactions }) => {
         </IconButton>
       </Box>
       <Box width="70%">
-        <Doughnut data={data} options={chartOptions} />
+        <Doughnut data={chartData} options={chartOptions} />
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
         <IconButton onClick={() => changeCurrentDateHandler(1)}>

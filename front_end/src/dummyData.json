@@ -15,7 +15,7 @@
     {
       "id": "2",
       "name": "Food",
-      "colour": "#bf00ff",
+      "colour": "#32a852",
       "icon": "RestaurantIcon"
     },
     {
@@ -38,7 +38,7 @@
       "date": "01.06.2022",
       "type": "expense",
       "description": "timing belt",
-      "category": "3",
+      "categoryId": "3",
       "amount": 356
     },
     {
@@ -46,7 +46,7 @@
       "date": "01.06.2022",
       "type": "income",
       "description": "salary",
-      "category": "999",
+      "categoryId": "999",
       "amount": 3567
     },
     {
@@ -54,7 +54,7 @@
       "date": "02.06.2022",
       "type": "income",
       "description": "freelance",
-      "category": "999",
+      "categoryId": "999",
       "amount": 556
     },
     {
@@ -62,7 +62,7 @@
       "date": "03.06.2022",
       "type": "expense",
       "description": "pizza",
-      "category": "2",
+      "categoryId": "2",
       "amount": 24
     },
     {
@@ -70,7 +70,7 @@
       "date": "05.06.2022",
       "type": "expense",
       "description": "towels",
-      "category": "0",
+      "categoryId": "0",
       "amount": 8
     },
     {
@@ -78,7 +78,7 @@
       "date": "05.06.2022",
       "type": "expense",
       "description": "cookie jar",
-      "category": "0",
+      "categoryId": "0",
       "amount": 15
     }
   ]

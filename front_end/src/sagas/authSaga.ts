@@ -1,4 +1,4 @@
-import { take, put, call } from "redux-saga/effects";
+import { take, put, call, delay } from "redux-saga/effects";
 
 import Auth from "./../store/user/auth";
 import {
@@ -8,16 +8,21 @@ import {
   SIGN_OUT,
   setIsLoading,
 } from "../actions";
+import data from "./../dummyData.json";
 
 export function* authSaga(): any {
   yield take(SIGN_IN);
   yield put(setIsLoading(true));
   try {
     const user = yield call([Auth, "currentUserInfo"]);
+    //API call to get categories
+    delay(1000);
+    const categories = data.categories;
     yield put(
       setUser({
         email: user.attributes.email,
         name: user.attributes.name,
+        categories,
       })
     );
     yield put(setIsAuthenticated(true));
