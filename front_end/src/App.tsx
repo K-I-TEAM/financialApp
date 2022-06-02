@@ -15,6 +15,7 @@ import NoMatch from "./components/NoMatch";
 import Home from "./components/Home";
 import NavBar from "./components/UI/NavBar";
 import { routes, RouteType } from "./routs";
+
 import { container } from "./styles";
 
 function App() {
