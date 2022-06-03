@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { useSelector } from "react-redux";
+import { Box } from "@mui/system";
+import { Button, Typography } from "@mui/material";
 
 import Auth from "./../store/user/auth";
 import { isAuthenticatedSelector } from "../selectors";
@@ -19,15 +21,34 @@ const Home: React.FC = () => {
   return (
     <>
       {" "}
-      <h2>Home component</h2>
-      <button
-        type="button"
-        onClick={() => {
-          Auth.federatedSignIn();
-        }}
+      <Box
+        width="100vw"
+        height="100vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
       >
-        Sign In
-      </button>
+        <Typography
+          fontSize="22px"
+          color="primary"
+          fontWeight="600"
+          sx={{ p: 3 }}
+        >
+          Your Financial App
+        </Typography>
+        <Box width="80%">
+          <img src={require("./../images/Money.png")} alt="" width="100%" />
+        </Box>
+        <Button
+          variant="contained"
+          onClick={() => {
+            Auth.federatedSignIn();
+          }}
+        >
+          Sign In / Sign Up
+        </Button>
+      </Box>
     </>
   );
 };

@@ -1,40 +1,47 @@
 import React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import { Link } from "react-router-dom";
+import { Link, matchPath } from "react-router-dom";
 import { Box } from "@mui/system";
+import { useLocation } from "react-router";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 
 import { navbarTabArray, NavbarTabType } from "../../settings";
-import { navbar, navbarTab } from "../../styles";
+import { navbar } from "../../styles";
+
+function useRouteMatch(patterns: readonly string[]) {
+  const { pathname } = useLocation();
+
+  for (let i = 0; i < patterns.length; i += 1) {
+    const pattern = patterns[i];
+    const possibleMatch = matchPath(pattern, pathname);
+    if (possibleMatch !== null) {
+      return possibleMatch;
+    }
+  }
+
+  return null;
+}
 
 const NavBar: React.FC = () => {
-  const [value, setValue] = React.useState(0);
+  const routeMatch = useRouteMatch(["/dashboard", "/transactions", "/profile"]);
+  const currentTab = routeMatch?.pattern?.path;
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
   return (
     <Box sx={navbar}>
-      <Tabs
-        value={value}
-        centered
-        //variant="scrollable"
-        scrollButtons="auto"
-        aria-label="icon tabs example"
-        onChange={handleChange}
-      >
+      <BottomNavigation showLabels value={currentTab}>
+        {" "}
         {navbarTabArray.map((el: NavbarTabType, index: number) => (
-          <Tab
+          <BottomNavigationAction
             key={index}
             icon={<el.icon />}
             aria-label={el.ariaLabel}
             label={el.label}
-            sx={navbarTab}
             component={Link}
             to={el.to}
+            value={el.to}
           />
         ))}
-      </Tabs>
+      </BottomNavigation>
     </Box>
   );
 };
