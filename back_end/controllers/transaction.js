@@ -10,7 +10,7 @@ const listTransactions = async (req, res) => {
           [Op.between]: [startedDate, endedDate],
         },
       },
-      logging: console.log,
+      //logging: console.log,
     });
     res.send(allTransactions);
   } catch (error) {
