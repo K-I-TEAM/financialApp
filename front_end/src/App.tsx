@@ -4,18 +4,18 @@ import {
   BrowserRouter as Router,
   Route,
   Navigate,
-  RouteProps,
   Routes,
   useLocation,
 } from "react-router-dom";
 import { Paper } from "@mui/material";
 
 import { isAuthenticatedSelector, isLoadingSelector } from "./selectors";
-import { signIn, signOut } from "./actions";
+import { signIn } from "./actions";
 import NoMatch from "./components/NoMatch";
 import Home from "./components/Home";
 import NavBar from "./components/UI/NavBar";
 import { routes, RouteType } from "./routs";
+
 import { container } from "./styles";
 
 function App() {
@@ -49,11 +49,8 @@ function App() {
       {isLoading ? null : (
         <Router>
           {" "}
-          {isAuthenticated ? <NavBar /> : null}
           <Paper elevation={6} sx={container}>
-            {isAuthenticated ? (
-              <button onClick={() => dispatch(signOut())}>Sign Out</button>
-            ) : null}
+            {isAuthenticated ? <NavBar /> : null}
 
             <Routes>
               <Route index element={<Home />} />
