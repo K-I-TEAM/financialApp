@@ -1,8 +1,17 @@
 import { Transaction } from '../models/Transaction.js';
+import { Op } from 'sequelize';
 
 const listTransactions = async (req, res) => {
+  const { startedDate, endedDate } = req.query;
   try {
-    const allTransactions = await Transaction.findAll();
+    const allTransactions = await Transaction.findAll({
+      where: {
+        date: {
+          [Op.between]: [startedDate, endedDate],
+        },
+      },
+      logging: console.log,
+    });
     res.send(allTransactions);
   } catch (error) {
     res.status(500).send(error);
