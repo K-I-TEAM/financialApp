@@ -6,6 +6,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { Box } from "@mui/system";
 import { IconButton } from "@mui/material";
+import { Skeleton } from "@mui/material";
 
 import { currentDateSelector } from "./../selectors";
 import { setCurrentDate } from "./../actions";
@@ -60,7 +61,7 @@ const options = {
     },
   },
 };
-const DashboardChart = ({ transactions, categories }) => {
+const DashboardChart = ({ transactions, categories, fetched }) => {
   const currentDate = useSelector(currentDateSelector);
   const dispatch = useDispatch();
   const [chartOptions, setChartOptions] = useState(options);
@@ -212,7 +213,7 @@ const DashboardChart = ({ transactions, categories }) => {
       },
     });
   }, [currentDate, transactions, categories]);
-  return (
+  return fetched ? (
     <Box display="flex" justifyContent="center">
       <Box sx={{ display: "flex", alignItems: "center", px: 1 }}>
         <IconButton onClick={() => changeCurrentDateHandler(-1)}>
@@ -228,6 +229,8 @@ const DashboardChart = ({ transactions, categories }) => {
         </IconButton>
       </Box>
     </Box>
+  ) : (
+    <Skeleton variant="circular" width={250} height={250} sx={{ mx: "auto" }} />
   );
 };
 export default DashboardChart;

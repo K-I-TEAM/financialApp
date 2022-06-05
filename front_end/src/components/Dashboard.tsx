@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import List from "@mui/material/List";
 import Brightness1Icon from "@mui/icons-material/Brightness1";
 import ListItemText from "@mui/material/ListItemText";
-import { Typography } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 import { ListItem } from "@mui/material";
 import { Divider } from "@mui/material";
 import { ListItemAvatar } from "@mui/material";
@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
   const user = useSelector(userSelector);
   const transactions = useSelector(transactionsSelector);
   const dispatch = useDispatch();
+  const strCount = 5;
   useEffect(() => {
     dispatch(getTransactions({ userId: user.email, date: currentDate }));
   }, [currentDate, dispatch, user.email]);
@@ -39,12 +40,13 @@ const Dashboard: React.FC = () => {
         <DashboardChart
           transactions={transactions ? transactions.toJS() : []}
           categories={user.categories}
+          fetched={transactions !== null}
         />{" "}
-        {transactions ? (
-          <List component="div" disablePadding sx={{ pt: 2 }}>
-            {transactions
+        <List component="div" disablePadding sx={{ pt: 2 }}>
+          {transactions ? (
+            transactions
               .toJS()
-              .slice(0, 5)
+              .slice(0, strCount)
               .map((transaction: TransactionType) => {
                 return (
                   <ListItem
@@ -74,9 +76,15 @@ const Dashboard: React.FC = () => {
                     <ListItemText primary={transaction.description} />
                   </ListItem>
                 );
-              })}
-          </List>
-        ) : null}
+              })
+          ) : (
+            <>
+              {[...Array(strCount)].map(() => (
+                <Skeleton height={50} />
+              ))}
+            </>
+          )}
+        </List>
       </Box>
     </>
   );
