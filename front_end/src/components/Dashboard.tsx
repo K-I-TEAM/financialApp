@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import List from "@mui/material/List";
 import Brightness1Icon from "@mui/icons-material/Brightness1";
 import ListItemText from "@mui/material/ListItemText";
-import { Typography } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 import { ListItem } from "@mui/material";
 import { Divider } from "@mui/material";
 import { ListItemAvatar } from "@mui/material";
@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
   const user = useSelector(userSelector);
   const transactions = useSelector(transactionsSelector);
   const dispatch = useDispatch();
+  const strCount = 5;
   useEffect(() => {
     dispatch(getTransactions({ userId: user.email, date: currentDate }));
   }, [currentDate, dispatch, user.email]);
@@ -37,40 +38,52 @@ const Dashboard: React.FC = () => {
           23456.78 $
         </Box>
         <DashboardChart
-          transactions={transactions}
+          transactions={transactions ? transactions.toJS() : []}
           categories={user.categories}
-        />
+          fetched={transactions !== null}
+        />{" "}
         <List component="div" disablePadding sx={{ pt: 2 }}>
-          {transactions.slice(0, 5).map((transaction: TransactionType) => {
-            return (
-              <>
-                <ListItem
-                  key={transaction.description}
-                  sx={{ pl: 6 }}
-                  secondaryAction={
-                    <Typography>
-                      {transaction.type === "expense" ? "- " : null}
-                      {transaction.amount}$
-                    </Typography>
-                  }
-                >
-                  <ListItemAvatar>
-                    <Brightness1Icon
-                      fontSize="small"
-                      sx={{
-                        color: user.categories.filter(
-                          (category: CategoryType) =>
-                            category.id === transaction.categoryId
-                        )[0].colour,
-                      }}
-                    />
-                  </ListItemAvatar>
-                  <ListItemText primary={transaction.description} />
-                </ListItem>
-                <Divider />
-              </>
-            );
-          })}
+          {transactions ? (
+            transactions
+              .toJS()
+              .slice(0, strCount)
+              .map((transaction: TransactionType) => {
+                return (
+                  <ListItem
+                    key={transaction.description}
+                    sx={{
+                      pl: 6,
+                      borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                    }}
+                    secondaryAction={
+                      <Typography>
+                        {transaction.type === "expense" ? "- " : null}
+                        {transaction.amount}$
+                      </Typography>
+                    }
+                  >
+                    <ListItemAvatar>
+                      <Brightness1Icon
+                        fontSize="small"
+                        sx={{
+                          color: user.categories.filter(
+                            (category: CategoryType) =>
+                              category.id === transaction.categoryId
+                          )[0].colour,
+                        }}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText primary={transaction.description} />
+                  </ListItem>
+                );
+              })
+          ) : (
+            <>
+              {[...Array(strCount)].map(() => (
+                <Skeleton height={50} />
+              ))}
+            </>
+          )}
         </List>
       </Box>
     </>

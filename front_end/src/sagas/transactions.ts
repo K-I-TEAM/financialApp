@@ -7,7 +7,7 @@ export function* getTransactionsSaga(): any {
   const { userId, date }: any = yield take(GET_TRANSACTIONS);
   try {
     //API call to get transactions
-    yield delay(1000);
+    yield delay(2500);
     const transactions = data.transactions;
     yield put(setTransactions(transactions));
   } catch (error) {
