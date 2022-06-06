@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Box } from "@mui/system";
 
-import DashboardChart from "./DashboardChart";
+import DashboardChart from "./DashboardChart/DashboardChart";
 import {
   currentDateSelector,
   userSelector,
