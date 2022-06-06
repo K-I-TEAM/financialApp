@@ -1,13 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Box } from "@mui/system";
-import List from "@mui/material/List";
-import Brightness1Icon from "@mui/icons-material/Brightness1";
-import ListItemText from "@mui/material/ListItemText";
-import { Skeleton, Typography } from "@mui/material";
-import { ListItem } from "@mui/material";
-import { Divider } from "@mui/material";
-import { ListItemAvatar } from "@mui/material";
 
 import DashboardChart from "./DashboardChart";
 import {
@@ -16,14 +9,13 @@ import {
   transactionsSelector,
 } from "./../selectors";
 import { getTransactions } from "./../actions";
-import { TransactionType, CategoryType } from "../defaultState";
+import CustomList from "./UI/CusomList";
 
 const Dashboard: React.FC = () => {
   const currentDate = useSelector(currentDateSelector);
   const user = useSelector(userSelector);
   const transactions = useSelector(transactionsSelector);
   const dispatch = useDispatch();
-  const strCount = 5;
   useEffect(() => {
     dispatch(getTransactions({ userId: user.email, date: currentDate }));
   }, [currentDate, dispatch, user.email]);
@@ -42,49 +34,11 @@ const Dashboard: React.FC = () => {
           categories={user.categories}
           fetched={transactions !== null}
         />{" "}
-        <List component="div" disablePadding sx={{ pt: 2 }}>
-          {transactions ? (
-            transactions
-              .toJS()
-              .slice(0, strCount)
-              .map((transaction: TransactionType) => {
-                return (
-                  <ListItem
-                    key={transaction.description}
-                    sx={{
-                      pl: 6,
-                      borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-                    }}
-                    secondaryAction={
-                      <Typography>
-                        {transaction.type === "expense" ? "- " : null}
-                        {transaction.amount}$
-                      </Typography>
-                    }
-                  >
-                    <ListItemAvatar>
-                      <Brightness1Icon
-                        fontSize="small"
-                        sx={{
-                          color: user.categories.filter(
-                            (category: CategoryType) =>
-                              category.id === transaction.categoryId
-                          )[0].colour,
-                        }}
-                      />
-                    </ListItemAvatar>
-                    <ListItemText primary={transaction.description} />
-                  </ListItem>
-                );
-              })
-          ) : (
-            <>
-              {[...Array(strCount)].map(() => (
-                <Skeleton height={50} />
-              ))}
-            </>
-          )}
-        </List>
+        <CustomList
+          items={transactions}
+          maxAmount={5}
+          categories={user.categories}
+        />
       </Box>
     </>
   );
