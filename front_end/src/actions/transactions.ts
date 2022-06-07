@@ -9,7 +9,4 @@ export const setTransactions = makeActionCreator(
   "transactions"
 );
 export const ADD_TRANSACTION = "ADD_TRANSACTION";
-export const add_transaction = makeActionCreator(
-  ADD_TRANSACTION,
-  "transaction"
-);
+export const addTransaction = makeActionCreator(ADD_TRANSACTION, "transaction");

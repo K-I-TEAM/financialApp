@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   ListItem,
   List,
@@ -15,7 +17,7 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 
 import { TransactionType, CategoryType } from "../../defaultState";
 import Transaction from "../Transaction";
-import { useState } from "react";
+import { addTransaction } from "./../../actions";
 
 type PropsType = {
   items: Immutable.List<TransactionType> | null;
@@ -32,12 +34,22 @@ const CustomList: React.FC<PropsType> = ({
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogType, setOpenDialogType] = useState("");
+  const dispatch = useDispatch();
   const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+  const addTransactionHandler = (transaction: TransactionType) => {
+    dispatch(addTransaction(transaction));
     setOpenDialog(false);
   };
   return (
     <>
-      <Transaction open={openDialog} handleClose={handleCloseDialog} />
+      <Transaction
+        open={openDialog}
+        handleClose={handleCloseDialog}
+        dialogType={openDialogType}
+        addTransactionHandler={addTransactionHandler}
+      />
       <List component="div" disablePadding sx={{ pt: 2, position: "relative" }}>
         {items ? (
           items

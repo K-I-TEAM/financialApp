@@ -14,28 +14,49 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 import { userSelector } from "./../selectors";
-import { CategoryType } from "./../defaultState";
+import {
+  CategoryType,
+  TransactionType,
+  TransactionTypeType,
+} from "./../defaultState";
 
 type PropsType = {
   open: boolean;
   handleClose: React.MouseEventHandler;
+  addTransactionHandler: (transaction: TransactionType) => void;
+  dialogType: string;
 };
-const Transaction: React.FC<PropsType> = ({ open, handleClose }) => {
+const Transaction: React.FC<PropsType> = ({
+  open,
+  handleClose,
+  addTransactionHandler,
+  dialogType,
+}) => {
   const { categories } = useSelector(userSelector);
   const [currentCategory, setCurrentCategory] = useState("");
-  const [currentName, setCurrentName] = useState("");
+  const [currentDescription, setCurrentDescription] = useState("");
   const [currentAmount, setCurrentAmount] = useState("");
   const handleChangeCategory = (event: SelectChangeEvent) => {
     setCurrentCategory(event.target.value as string);
   };
   const changeNameHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setCurrentName(event.target.value);
+    setCurrentDescription(event.target.value);
   const changeAmountHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCurrentAmount(event.target.value);
+  const submitHandler = () => {
+    addTransactionHandler({
+      id: Math.random().toString(),
+      date: new Date(),
+      description: currentDescription,
+      type: dialogType as TransactionTypeType,
+      amount: Number(currentAmount),
+      categoryId: currentCategory,
+    });
+  };
   return (
     <>
       {" "}
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} disableEnforceFocus>
         <DialogTitle>Transaction</DialogTitle>
         <DialogContent>
           <TextField
@@ -46,7 +67,7 @@ const Transaction: React.FC<PropsType> = ({ open, handleClose }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={currentName}
+            value={currentDescription}
             onChange={changeNameHandler}
           />
           <TextField
@@ -65,7 +86,7 @@ const Transaction: React.FC<PropsType> = ({ open, handleClose }) => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={currentCategory}
-              label="Age"
+              label="Category"
               onChange={handleChangeCategory}
             >
               {categories.map((category: CategoryType) => (
@@ -77,7 +98,7 @@ const Transaction: React.FC<PropsType> = ({ open, handleClose }) => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Submit</Button>
+          <Button onClick={submitHandler}>Submit</Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </Dialog>

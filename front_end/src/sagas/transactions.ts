@@ -18,11 +18,14 @@ export function* getTransactionsSaga(): any {
 }
 export function* addTransactionSaga(): any {
   const { transaction }: any = yield take(ADD_TRANSACTION);
+  console.log("transaction: ", transaction);
   try {
     //API call to add transactions
     yield delay(2500);
-    const transactions = yield select(transactionsSelector);
+    const transactions = (yield select(transactionsSelector)).toJS();
+    console.log("transactions before: ", transactions);
     transactions.unshift(transaction);
+    console.log("transactions after: ", transactions);
     yield put(setTransactions(transactions));
   } catch (error) {
     console.log("err: ", error);
