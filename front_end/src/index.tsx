@@ -20,9 +20,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <MuiThemeProvider theme={THEME}>
     <Provider store={store}>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
+      <App />
     </Provider>
   </MuiThemeProvider>
 );

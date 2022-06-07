@@ -16,4 +16,6 @@ export {
   getTransactions,
   SET_TRANSACTIONS,
   setTransactions,
+  ADD_TRANSACTION,
+  add_transaction,
 } from "./transactions";

@@ -8,3 +8,8 @@ export const setTransactions = makeActionCreator(
   SET_TRANSACTIONS,
   "transactions"
 );
+export const ADD_TRANSACTION = "ADD_TRANSACTION";
+export const add_transaction = makeActionCreator(
+  ADD_TRANSACTION,
+  "transaction"
+);
