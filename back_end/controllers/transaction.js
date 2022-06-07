@@ -1,18 +1,27 @@
 import { Transaction } from '../models/Transaction.js';
 import { Op } from 'sequelize';
+import { calculateBalances } from '../helper/balance.js';
 
 const listTransactions = async (req, res) => {
   const { startedDate, endedDate } = req.query;
   try {
-    const allTransactions = await Transaction.findAll({
-      where: {
-        date: {
-          [Op.between]: [startedDate, endedDate],
+    let allTransactions = [];
+
+    if (startedDate === undefined && endedDate === undefined) {
+      allTransactions = await Transaction.findAll();
+    } else {
+      allTransactions = await Transaction.findAll({
+        where: {
+          date: {
+            [Op.between]: [startedDate, endedDate],
+          },
         },
-      },
-      //logging: console.log,
-    });
-    res.send(allTransactions);
+        //logging: console.log,
+      });
+    }
+
+    const transactions = calculateBalances(allTransactions);
+    res.json(transactions);
   } catch (error) {
     res.status(500).send(error);
   }
