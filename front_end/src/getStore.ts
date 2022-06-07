@@ -14,7 +14,7 @@ export const getStore = () => {
     middleware: middleWares,
     devTools: process.env.NODE_ENV !== "production",
     preloadedState: defaultState,
-    enhancers: composables,
+    //  enhancers: composables,
   });
   console.log("Saga middleware implemented!");
   initSagas(sagaMiddleware);
