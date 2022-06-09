@@ -7,6 +7,7 @@ const sequelize = new Sequelize('db', 'postgres', 'postgres', {
     max: 5,
     min: 0,
   },
+  logging: true,
 });
 
 export { sequelize };
