@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ListItem,
   List,
@@ -18,6 +18,7 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import { TransactionType, CategoryType } from "../../defaultState";
 import Transaction from "../Transaction";
 import { addTransaction } from "./../../actions";
+import { transactionSelector } from "./../../selectors";
 
 type PropsType = {
   items: Immutable.List<TransactionType> | null;
@@ -34,13 +35,20 @@ const CustomList: React.FC<PropsType> = ({
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogType, setOpenDialogType] = useState("");
+  const [chosenId, setChosenId] = useState("");
   const dispatch = useDispatch();
+  const chosenTransaction = useSelector(transactionSelector(chosenId));
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
   const addTransactionHandler = (transaction: TransactionType) => {
     dispatch(addTransaction(transaction));
     setOpenDialog(false);
+  };
+  const handleChooseItem = (id: string) => {
+    setChosenId(id);
+    setOpenDialogType("edit");
+    setOpenDialog(true);
   };
   return (
     <>
@@ -49,6 +57,7 @@ const CustomList: React.FC<PropsType> = ({
         handleClose={handleCloseDialog}
         dialogType={openDialogType}
         addTransactionHandler={addTransactionHandler}
+        chosenTransaction={chosenTransaction}
       />
       <List component="div" disablePadding sx={{ pt: 2, position: "relative" }}>
         {items ? (
@@ -69,6 +78,7 @@ const CustomList: React.FC<PropsType> = ({
                       {item.amount}$
                     </Typography>
                   }
+                  onClick={() => handleChooseItem(item.id)}
                 >
                   <ListItemAvatar>
                     <Brightness1Icon

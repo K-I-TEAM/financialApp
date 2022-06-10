@@ -20,6 +20,7 @@ const Transactions: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = React.useState(true);
   const [currency, setCurrency] = React.useState("EUR");
+  const [selectedId, setSelectedId] = React.useState(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -28,6 +29,8 @@ const Transactions: React.FC = () => {
   const handleClick = () => {
     setOpen(!open);
   };
+
+  const handleChooseItem = () => {};
   const currencies = [
     {
       value: "USD",
