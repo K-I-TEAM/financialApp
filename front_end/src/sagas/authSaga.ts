@@ -16,6 +16,14 @@ export function* authSaga(): any {
   try {
     const user = yield call([Auth, "currentUserInfo"]);
     //API call to get categories
+    const url = 'http://localhost:3001/categories'
+
+    fetch(url).then((res) => {
+      console.log('resss',res);
+    }).catch((error) => {
+      console.log('error',error);
+      
+    })
     delay(1000);
     const categories = data.categories;
     yield put(
