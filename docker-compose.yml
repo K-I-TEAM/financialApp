@@ -31,17 +31,26 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes: 
-      - db:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4
     restart: always
+    user: root
     environment:
       PGADMIN_DEFAULT_EMAIL: isaialbarran@gmail.com
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
-      - "5050:80"
+      - "8080:80"
+      - "8443:443"
+    volumes: 
+      - db_data:/var/lib/pgadmin
 volumes:
-  db:
+  # postgres database persistence
+  db_data:
     driver: local
+  # pgadmin config persistence
+  pgadmin_data:
+    driver: local
+  
