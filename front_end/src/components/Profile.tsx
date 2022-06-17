@@ -44,8 +44,11 @@ const Profile: React.FC = () => {
         <Button variant="contained" onClick={() => dispatch(signOut())}>
           Sign Out
         </Button>
+        <Button sx={{ ml: 1 }} variant="contained" onClick={() => {}}>
+          Categories
+        </Button>
         <Button
-          sx={{ ml: 2 }}
+          sx={{ ml: 1 }}
           variant="outlined"
           onClick={() => {
             navigate("/edit-profile");
