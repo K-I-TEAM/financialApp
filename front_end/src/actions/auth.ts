@@ -14,3 +14,6 @@ export const setIsAuthenticated = makeActionCreator(
 
 export const SET_USER = "SET_USER";
 export const setUser = makeActionCreator(SET_USER, "user");
+
+export const UPDATE_USER = "UPDATE_USER";
+export const updateUser = makeActionCreator(UPDATE_USER, "user");

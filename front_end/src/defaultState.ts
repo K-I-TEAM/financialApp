@@ -5,8 +5,8 @@ const defaultUserState = {
   user: {
     email: null as string | null,
     name: null as string | null,
-    surname: null as string | null,
-    telephone: null as string | null,
+    family_name: null as string | null,
+    phone_number: null as string | null,
     birthdate: null as string | null,
     picture_url: null as string | null,
     gender: "male" as GenderType,
@@ -45,3 +45,4 @@ export type CategoryType = {
   colour: string;
   icon: string;
 };
+export type UserType = typeof defaultUserState.user;

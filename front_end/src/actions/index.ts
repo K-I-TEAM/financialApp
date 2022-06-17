@@ -9,6 +9,8 @@ export {
   setIsAuthenticated,
   SET_USER,
   setUser,
+  UPDATE_USER,
+  updateUser,
 } from "./auth";
 export { setCurrentDate, SET_CURRENTDATE } from "./account";
 export {

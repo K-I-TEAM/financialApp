@@ -59,3 +59,12 @@ export const THEME = createTheme({
     },
   }, */
 });
+
+export const userFieldsToEdit = [
+  "email",
+  "name",
+  "family_name",
+  "birthdate",
+  "phone_number",
+  "gender",
+];

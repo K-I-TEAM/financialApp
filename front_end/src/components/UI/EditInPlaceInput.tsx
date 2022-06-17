@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, useState } from "react";
+import React, { useState } from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
@@ -11,15 +11,21 @@ import { TextField } from "@mui/material";
 type ActionType = {
   data: string | undefined;
   label: string;
+  updateHandler: (value: any) => void;
 };
 
-const EditInPlaceComponent: React.FC<ActionType> = ({ data, label }) => {
+const EditInPlaceInput: React.FC<ActionType> = ({
+  data,
+  label,
+  updateHandler,
+}) => {
   const [editMode, setEditMode] = useState(false);
   const [newValue, setNewValue] = useState(data);
-  const hadleNewValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewValue(event.target.value);
   };
   const handleEditCancel = () => {
+    console.log("handle cancel");
     setNewValue(data);
     setEditMode(false);
   };
@@ -30,7 +36,8 @@ const EditInPlaceComponent: React.FC<ActionType> = ({ data, label }) => {
         handleEditCancel();
         break;
       case "Enter":
-        //some handler
+        updateHandler(newValue);
+        setEditMode(false);
         break;
       default:
         break;
@@ -43,12 +50,21 @@ const EditInPlaceComponent: React.FC<ActionType> = ({ data, label }) => {
       secondaryAction={
         editMode ? (
           <Box>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                updateHandler(newValue);
+                setEditMode(false);
+              }}
+            >
               <CheckIcon />
             </IconButton>{" "}
-            <IconButton>
-              <ClearIcon onClick={handleEditCancel} />
-            </IconButton>
+            {/* <IconButton
+              onClick={() => {
+                console.log("handler");
+              }}
+            >
+              <ClearIcon />
+            </IconButton> */}
           </Box>
         ) : (
           <IconButton
@@ -67,13 +83,17 @@ const EditInPlaceComponent: React.FC<ActionType> = ({ data, label }) => {
           value={newValue}
           autoFocus
           label={label}
-          onChange={hadleNewValue}
-          onBlur={handleEditCancel}
+          onChange={handleNewValue}
+          onBlur={() => {
+            console.log("on blur");
+            updateHandler(newValue);
+            setEditMode(false);
+          }}
           onKeyDown={handleKeyDown}
         />
       ) : (
         <ListItemText
-          primary={`${label}: ${data}`}
+          primary={`${label}${data}`}
           //secondary={secondary ? 'Secondary text' : null}
         />
       )}
@@ -81,4 +101,4 @@ const EditInPlaceComponent: React.FC<ActionType> = ({ data, label }) => {
   );
 };
 
-export default EditInPlaceComponent;
+export default EditInPlaceInput;
