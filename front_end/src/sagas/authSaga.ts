@@ -18,6 +18,7 @@ export function* authSaga(): any {
   try {
     const user = yield call([Auth, "currentUserInfo"]);
     //API call to get categories
+    
     delay(1000);
     const categories = data.categories;
     yield put(
