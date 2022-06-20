@@ -79,4 +79,22 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { listUsers, createUser, getUser, updateUser, deleteUser };
+const getUserByEmail = async (email) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+export { listUsers, createUser, getUser, updateUser, deleteUser, getUserByEmail };
