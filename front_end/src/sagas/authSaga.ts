@@ -1,4 +1,4 @@
-import { take, put, call, delay } from "redux-saga/effects";
+import { take, put, call, delay, takeEvery, select } from "redux-saga/effects";
 
 import Auth from "./../store/user/auth";
 import {
@@ -7,7 +7,9 @@ import {
   setIsAuthenticated,
   SIGN_OUT,
   setIsLoading,
+  UPDATE_USER,
 } from "../actions";
+import { userSelector } from "../selectors";
 import data from "./../dummyData.json";
 
 export function* authSaga(): any {
@@ -21,8 +23,12 @@ export function* authSaga(): any {
     const categories = data.categories;
     yield put(
       setUser({
-        email: user.attributes.email,
-        name: user.attributes.name,
+        email: user.attributes.email || "",
+        name: user.attributes.name || "",
+        family_name: user.attributes.family_name || "",
+        birthdate: user.attributes.birthdate || "",
+        gender: user.attributes.gender || "",
+        phone_number: user.attributes.phone_number || "",
         categories,
       })
     );
@@ -44,4 +50,21 @@ export function* signOutSaga(): any {
   } catch (err) {
     console.log(err);
   }
+}
+
+function* updateUserWorker(payload: any): any {
+  const { user } = payload;
+  try {
+    const currentUser = yield call([Auth, "currentAuthenticatedUser"]);
+    console.log("current us:", currentUser);
+    yield call([Auth, "updateUserAttributes"], currentUser, user);
+    const stateUser = yield select(userSelector);
+    yield put(setUser({ ...stateUser, ...user }));
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export function* updateUserSaga(): any {
+  yield takeEvery(UPDATE_USER, updateUserWorker);
 }
