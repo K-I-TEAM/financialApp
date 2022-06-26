@@ -1,4 +1,5 @@
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { createUser, getUserByEmail } from '../controllers/user.js';
 import { cleanToken } from '../helper/balance.js';
 import { Error } from '../helper/errorMessages.js';
 
@@ -16,10 +17,28 @@ const checkToken = async (req, res, next) => {
 
     try {
       const payload = await verifier.verify(cleanToken(token));
-      console.log('Token is valid. Payload:', payload);
-      next();
-    } catch {
-      res.status(401).send(Error.NOT_VALID_TOKEN);
+      const userExists = await getUserByEmail(payload.email);
+
+      if (!userExists) {
+        const params = {
+          name: payload.name,
+          email: payload.email,
+        };
+
+        const user = await createUser(params);
+
+        if (user.id) {
+          next();
+        } else {
+          return res.status(500).send(user);
+        }
+      }
+    } catch (error) {
+      if (error) {
+        return res.status(500).send(err);
+      } else {
+        return res.status(401).send(Error.NOT_VALID_TOKEN);
+      }
     }
   } catch (error) {
     res.status(500).send(error);
