@@ -1,18 +1,24 @@
-import jwtDecode from 'jwt-decode';
-import { getUserByEmail } from '../controllers/user.js';
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { cleanToken } from '../helper/balance.js';
 
 const checkToken = async (req, res, next) => {
   try {
-    const token = req.headers['x-access-token'] || req.headers.authorization || '';
+    let token = req.headers['x-access-token'] || req.headers.authorization || '';
     if (!token) return res.status(401).send('No token provided');
 
-    const decoded = jwtDecode(token);
-    if (!decoded) return res.status(400).send('Not a valid JWT token');
+    // Verifier that expects valid access tokens:
+    const verifier = CognitoJwtVerifier.create({
+      userPoolId: process.env.USER_POOL_ID,
+      tokenUse: process.env.TOKEN_USE,
+      clientId: process.env.CLIENT_ID,
+    });
 
-    if (!decoded.email) return res.status(400).send('Incomplete JWT token');
-
-    const userExists = await getUserByEmail(decoded.email);
-    if (!userExists) return res.status(400).send('User without privilegdes');
+    try {
+      const payload = await verifier.verify(cleanToken(token));
+      console.log('Token is valid. Payload:', payload);
+    } catch {
+      console.log('Token not valid!');
+    }
 
     next();
   } catch (error) {

@@ -16,4 +16,11 @@ const calculateBalances = (transactions) => {
   return transactions;
 };
 
-export { calculateBalances };
+const cleanToken = (token) => {
+  let cleanToken = token.replace('Bearer ', '');
+  cleanToken = token.replace('"', '');
+  cleanToken = token.replace('"', '');
+  return cleanToken;
+};
+
+export { calculateBalances, cleanToken };
