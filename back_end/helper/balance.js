@@ -18,8 +18,8 @@ const calculateBalances = (transactions) => {
 
 const cleanToken = (token) => {
   let cleanToken = token.replace('Bearer ', '');
-  cleanToken = token.replace('"', '');
-  cleanToken = token.replace('"', '');
+  cleanToken = cleanToken.replace('"', '');
+  cleanToken = cleanToken.replace('"', '');
   return cleanToken;
 };
 
