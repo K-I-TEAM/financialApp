@@ -26,7 +26,6 @@ const checkToken = async (req, res, next) => {
         };
 
         const user = await createUser(params);
-
         if (user.id) {
           next();
         } else {
@@ -34,8 +33,10 @@ const checkToken = async (req, res, next) => {
         }
       }
     } catch (error) {
-      if (error) {
-        return res.status(500).send(err);
+      if (error.message.includes(Error.TOKEN_EXPIRED)) {
+        return res.status(401).send(Error.TOKEN_EXPIRED);
+      } else if (error) {
+        return res.status(500).send(error);
       } else {
         return res.status(401).send(Error.NOT_VALID_TOKEN);
       }
