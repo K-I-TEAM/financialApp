@@ -28,19 +28,20 @@ const getUser = async (req, res) => {
   }
 };
 
-const createUser = async (req, res) => {
-  const { name, surname, email, gender } = req.body;
+const createUser = async (params) => {
+  const { name, email } = params;
 
   try {
-    const newUser = await User.create({
+    const user = await User.create({
       name,
-      surname,
       email,
-      gender,
     });
-    res.send(newUser);
+    if (user.dataValues.id) {
+      return user.dataValues;
+    }
+    return user;
   } catch (error) {
-    res.status(500).send(error);
+    return error;
   }
 };
 
