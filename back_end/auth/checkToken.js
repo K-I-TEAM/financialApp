@@ -7,6 +7,7 @@ const checkToken = async (req, res, next) => {
   try {
     let token =
       req.headers["x-access-token"] || req.headers.authorization || "";
+    console.log("token: ", token);
     if (!token) return res.status(401).send(Error.NO_TOKEN);
 
     // Verifier that expects valid access tokens:
@@ -32,6 +33,8 @@ const checkToken = async (req, res, next) => {
         } else {
           return res.status(500).send(user);
         }
+      } else {
+        next();
       }
     } catch (error) {
       if (error.message.includes(Error.TOKEN_EXPIRED)) {
