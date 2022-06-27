@@ -21,3 +21,13 @@ export {
   ADD_TRANSACTION,
   addTransaction,
 } from "./transactions";
+export {
+  GET_CATEGORIES,
+  getCategories,
+  CREATE_CATEGORY,
+  createCategory,
+  DELETE_CATEGORY,
+  deleteCategory,
+  UPDATE_CATEGORY,
+  updateCategory,
+} from "./categories";

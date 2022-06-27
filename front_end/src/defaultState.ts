@@ -39,10 +39,10 @@ export type TransactionType = {
 };
 export type TransactionTypeType = "expense" | "income";
 export type CategoryType = {
-  id: string;
+  id?: string;
   name: string;
   description?: string;
-  colour: string;
+  color: string;
   icon: string;
 };
 export type UserType = typeof defaultUserState.user;
