@@ -1,4 +1,5 @@
 import { Transaction } from '../models/Transaction.js';
+import { Category } from '../models/Category.js';
 import { Op } from 'sequelize';
 import { calculateBalances } from '../helper/balance.js';
 
@@ -8,9 +9,10 @@ const listTransactions = async (req, res) => {
     let allTransactions = [];
 
     if (startedDate === undefined && endedDate === undefined) {
-      allTransactions = await Transaction.findAll();
+      allTransactions = await Transaction.findAll({ include: Category });
     } else {
       allTransactions = await Transaction.findAll({
+        include: Category,
         where: {
           date: {
             [Op.between]: [startedDate, endedDate],
@@ -31,6 +33,7 @@ const getTransaction = async (req, res) => {
   const { id } = req.params;
   try {
     const transaction = await Transaction.findOne({
+      include: Category,
       where: {
         id: id,
       },
