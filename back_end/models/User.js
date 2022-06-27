@@ -17,7 +17,6 @@ const User = sequelize.define(
     },
     surname: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
@@ -34,8 +33,9 @@ const User = sequelize.define(
       type: DataTypes.STRING,
     },
     gender: {
-      type: DataTypes.ENUM('male', 'female'),
+      type: DataTypes.ENUM('male', 'female', 'not given'),
       allowNull: false,
+      defaultValue: 'not given',
     },
     slug: {
       type: DataTypes.STRING,

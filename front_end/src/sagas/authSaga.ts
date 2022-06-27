@@ -11,7 +11,6 @@ import {
 } from "../actions";
 import { listCategory } from "./../api/category";
 import { userSelector } from "../selectors";
-import data from "./../dummyData.json";
 
 export function* authSaga(): any {
   yield take(SIGN_IN);
@@ -19,9 +18,11 @@ export function* authSaga(): any {
   try {
     const user = yield call([Auth, "currentUserInfo"]);
     //API call to get categories
-
-    const categories = yield call(listCategory);
-    console.log("categories", categories.data);
+    console.log("user: ", user);
+    yield call(listCategory);
+    // const categories = yield call(listCategory);
+    //  console.log("categories", categories.data);
+    const categories: any = [];
     yield put(
       setUser({
         email: user.attributes.email || "",
@@ -30,7 +31,7 @@ export function* authSaga(): any {
         birthdate: user.attributes.birthdate || "",
         gender: user.attributes.gender || "",
         phone_number: user.attributes.phone_number || "",
-        categories: [...categories.data],
+        categories: [...categories],
       })
     );
     yield put(setIsAuthenticated(true));
