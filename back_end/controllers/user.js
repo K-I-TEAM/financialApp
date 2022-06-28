@@ -92,7 +92,7 @@ const getUserByEmail = async (email) => {
       return false;
     }
 
-    return true;
+    return user.dataValues;
   } catch (error) {
     console.log('error', error);
   }
