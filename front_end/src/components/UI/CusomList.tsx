@@ -87,7 +87,7 @@ const CustomList: React.FC<PropsType> = ({
                         color: categories.filter(
                           (category: CategoryType) =>
                             category.id === item.categoryId
-                        )[0].colour,
+                        )[0].color,
                       }}
                     />
                   </ListItemAvatar>
