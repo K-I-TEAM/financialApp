@@ -3,17 +3,28 @@ import { Category } from '../models/Category.js';
 import { Op } from 'sequelize';
 import { calculateBalances } from '../helper/balance.js';
 
-const listTransactions = async (req, res) => {
-  const { startedDate, endedDate } = req.query;
+const listTransactions = async (req, res, next) => {
+  const { userId, startedDate, endedDate } = req.query;
+
   try {
     let allTransactions = [];
 
+    if (!userId) {
+      return res.status(400).send('userId required');
+    }
+
     if (startedDate === undefined && endedDate === undefined) {
-      allTransactions = await Transaction.findAll({ include: Category });
+      allTransactions = await Transaction.findAll({
+        include: Category,
+        where: {
+          user_id: userId,
+        },
+      });
     } else {
       allTransactions = await Transaction.findAll({
         include: Category,
         where: {
+          user_id: userId,
           date: {
             [Op.between]: [startedDate, endedDate],
           },
@@ -50,7 +61,14 @@ const getTransaction = async (req, res) => {
 };
 
 const createTransaction = async (req, res) => {
-  const { date, type, description, category, amount } = req.body;
+  const { date, type, description, category, amount, userId } = req.body;
+
+  if (!date || !type || !description || !category || !amount || !userId) {
+    return res.status(400).send(`
+    Those fields are required:
+    date, type, description, category, amount, userId
+    `);
+  }
 
   try {
     const newTransaction = await Transaction.create({
@@ -59,6 +77,7 @@ const createTransaction = async (req, res) => {
       description,
       category,
       amount,
+      user_id: userId,
     });
     res.send(newTransaction);
   } catch (error) {
@@ -69,6 +88,13 @@ const createTransaction = async (req, res) => {
 const updateTransaction = async (req, res) => {
   const { id } = req.params;
   const { date, type, description, category, amount } = req.body;
+
+  if (!date || !type || !description || !category || !amount) {
+    return res.status(400).send(`
+    Those fields are required:
+    date, type, description, category, amount
+    `);
+  }
 
   try {
     const transaction = await Transaction.findByPk(id);

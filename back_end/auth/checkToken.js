@@ -19,9 +19,9 @@ const checkToken = async (req, res, next) => {
 
     try {
       const payload = await verifier.verify(cleanToken(token));
-      const userExists = await getUserByEmail(payload.email);
+      const user = await getUserByEmail(payload.email);
 
-      if (!userExists) {
+      if (!user) {
         const params = {
           name: payload.name,
           email: payload.email,
