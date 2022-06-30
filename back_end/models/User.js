@@ -1,7 +1,7 @@
 import { DataTypes, Sequelize } from 'sequelize';
 import { sequelize } from '../database/index.js';
-import { Account } from './Account.js';
 import { Category } from './Category.js';
+import { Transaction } from './Transaction.js';
 
 const User = sequelize.define(
   'users',
@@ -71,12 +71,12 @@ Category.belongsTo(User, {
   targetKey: 'id',
 });
 
-User.hasMany(Account, {
+User.hasMany(Transaction, {
   foreignKey: 'user_id',
   sourceKey: 'id',
 });
 
-Account.belongsTo(User, {
+Transaction.belongsTo(User, {
   foreignKey: 'user_id',
   targetKey: 'id',
 });

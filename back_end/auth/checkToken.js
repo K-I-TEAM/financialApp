@@ -1,13 +1,11 @@
-import { CognitoJwtVerifier } from "aws-jwt-verify";
-import { createUser, getUserByEmail } from "../controllers/user.js";
-import { cleanToken } from "../helper/balance.js";
-import { Error } from "../helper/errorMessages.js";
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { createUser, getUserByEmail } from '../controllers/user.js';
+import { cleanToken } from '../helper/balance.js';
+import { Error } from '../helper/errorMessages.js';
 
 const checkToken = async (req, res, next) => {
   try {
-    let token =
-      req.headers["x-access-token"] || req.headers.authorization || "";
-    console.log("token: ", token);
+    let token = req.headers['x-access-token'] || req.headers.authorization || '';
     if (!token) return res.status(401).send(Error.NO_TOKEN);
 
     // Verifier that expects valid access tokens:
@@ -19,9 +17,9 @@ const checkToken = async (req, res, next) => {
 
     try {
       const payload = await verifier.verify(cleanToken(token));
-      const userExists = await getUserByEmail(payload.email);
+      const user = await getUserByEmail(payload.email);
 
-      if (!userExists) {
+      if (!user) {
         const params = {
           name: payload.name,
           email: payload.email,

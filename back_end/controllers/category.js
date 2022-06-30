@@ -1,8 +1,17 @@
 import { Category } from '../models/Category.js';
 
 const listCategories = async (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).send('userId required');
+  }
   try {
-    const allCategories = await Category.findAll();
+    const allCategories = await Category.findAll({
+      where: {
+        user_id: userId,
+      },
+    });
     res.send(allCategories);
   } catch (error) {
     res.status(500).send(error);
@@ -29,7 +38,14 @@ const getCategory = async (req, res) => {
 };
 
 const createCategory = async (req, res) => {
-  const { name, description, icon, color } = req.body;
+  const { name, description, icon, color, userId } = req.body;
+
+  if (!name || !description || !icon || !color || !userId) {
+    return res.status(400).send(`
+    Those fields are required:
+    name, description, icon, color, userId
+    `);
+  }
 
   try {
     const newCategory = await Category.create({
@@ -37,6 +53,7 @@ const createCategory = async (req, res) => {
       description,
       icon,
       color,
+      user_id: userId,
     });
     res.send(newCategory);
   } catch (error) {
@@ -47,6 +64,13 @@ const createCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   const { id } = req.params;
   const { name, description, icon, color } = req.body;
+
+  if (!name || !description || !icon || !color) {
+    return res.status(400).send(`
+    Those fields are required:
+    name, description, icon, color
+    `);
+  }
 
   try {
     const category = await Category.findByPk(id);
