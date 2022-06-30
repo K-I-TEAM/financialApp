@@ -80,6 +80,28 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getUserId = async (req, res) => {
+  const { email } = req.params;
+  try {
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User doesn't exists" });
+    }
+
+    res.send({
+      id: user.id,
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+//NOT REST API
 const getUserByEmail = async (email) => {
   try {
     const user = await User.findOne({
@@ -98,4 +120,4 @@ const getUserByEmail = async (email) => {
   }
 };
 
-export { listUsers, createUser, getUser, updateUser, deleteUser, getUserByEmail };
+export { listUsers, createUser, getUser, updateUser, deleteUser, getUserByEmail, getUserId };
