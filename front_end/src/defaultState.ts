@@ -3,6 +3,7 @@ import { fromJS } from "immutable";
 const defaultUserState = {
   isAuthenticated: false,
   user: {
+    id: null as string | null,
     email: null as string | null,
     name: null as string | null,
     family_name: null as string | null,

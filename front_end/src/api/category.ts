@@ -2,8 +2,12 @@ import { AxiosPromise } from "@aws-amplify/storage/node_modules/axios";
 import { AxiosObject } from "./axiosObject ";
 import { CategoryType } from "../defaultState";
 
-export const listCategory = (): AxiosPromise<CategoryType[]> => {
-  return AxiosObject.get("/categories");
+export const listCategory = (userId: string): AxiosPromise<CategoryType[]> => {
+  return AxiosObject.get("/categories", {
+    params: {
+      userId,
+    },
+  });
 };
 export const createCategory = (
   category: CategoryType
