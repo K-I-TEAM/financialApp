@@ -17,8 +17,8 @@ const Dashboard: React.FC = () => {
   const transactions = useSelector(transactionsSelector);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getTransactions({ userId: user.email, date: currentDate }));
-  }, [currentDate, dispatch, user.email]);
+    dispatch(getTransactions({ userId: user.id, date: currentDate }));
+  }, [currentDate, dispatch, user.id]);
   return (
     <>
       {" "}

@@ -20,7 +20,7 @@ const Categories = () => {
   const [currentCategory, setCurrentCategory] = useState(
     null as CategoryType | null
   );
-  const { categories } = useSelector(userSelector);
+  const { categories, id } = useSelector(userSelector);
   const dispatch = useDispatch();
 
   return (
@@ -36,7 +36,7 @@ const Categories = () => {
                   dispatch(updateCategory({ category, id }));
                 }
               : (category: CategoryType) => {
-                  dispatch(createCategory(category));
+                  dispatch(createCategory({ category, userId: id }));
                 }
           }
         />

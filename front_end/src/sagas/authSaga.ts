@@ -57,7 +57,6 @@ function* updateUserWorker(payload: any): any {
   const { user } = payload;
   try {
     const currentUser = yield call([Auth, "currentAuthenticatedUser"]);
-    console.log("current us:", currentUser);
     yield call([Auth, "updateUserAttributes"], currentUser, user);
     const stateUser = yield select(userSelector);
     yield put(setUser({ ...stateUser, ...user }));

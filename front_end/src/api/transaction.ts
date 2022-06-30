@@ -3,11 +3,12 @@ import { AxiosObject } from "./axiosObject ";
 import { TransactionType } from "../defaultState";
 
 export const listTransactions = (
+  userId: string,
   startedDate: Date,
   endedDate: Date
 ): AxiosPromise<TransactionType[]> => {
   return AxiosObject.get("/transactions", {
-    params: { startedDate, endedDate },
+    params: { userId, startedDate, endedDate },
   });
 };
 export const UpdateTransactions = (

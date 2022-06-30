@@ -16,11 +16,12 @@ import { userSelector } from "../selectors";
 import { CategoryType } from "../defaultState";
 
 function* createCategoryWorker(payload: any): any {
-  const { category } = payload;
+  console.log("payload: ", payload);
+  const { category, userId } = payload.category;
   try {
     const currentUser = yield call([Auth, "currentAuthenticatedUser"]);
     console.log("current us:", currentUser);
-    const { id } = (yield call(createCategory, category)).data;
+    const { id } = (yield call(createCategory, category, userId)).data;
     console.log("id", id);
     const stateUser = yield select(userSelector);
     yield put(

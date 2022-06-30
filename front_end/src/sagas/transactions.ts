@@ -2,17 +2,17 @@ import { take, put, call, delay, select, takeEvery } from "redux-saga/effects";
 
 import { listTransactions } from "./../api/transaction";
 import data from "./../dummyData.json";
-import { transactionsSelector } from "./../selectors";
+import { transactionsSelector, userSelector } from "./../selectors";
 
 import { GET_TRANSACTIONS, setTransactions, ADD_TRANSACTION } from "../actions";
 
 export function* getTransactionsSaga(): any {
-  const { date } = (yield take(GET_TRANSACTIONS)).params;
+  const { userId, date } = (yield take(GET_TRANSACTIONS)).params;
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
   try {
     //API call to get transactions
-    const { data } = yield call(listTransactions, firstDay, lastDay);
+    const { data } = yield call(listTransactions, userId, firstDay, lastDay);
     console.log("trans result:", data);
     const transactions = data;
     yield put(setTransactions(transactions));

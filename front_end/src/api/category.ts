@@ -10,9 +10,10 @@ export const listCategory = (userId: string): AxiosPromise<CategoryType[]> => {
   });
 };
 export const createCategory = (
-  category: CategoryType
+  category: CategoryType,
+  userId: string
 ): AxiosPromise<CategoryType[]> => {
-  return AxiosObject.post("/categories", category);
+  return AxiosObject.post("/categories", { ...category, userId });
 };
 export const updateCategory = (
   category: CategoryType,
