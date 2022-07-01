@@ -40,7 +40,7 @@ const DashboardChart = ({ transactions, categories, fetched }) => {
     );
     const labels = calculatedCategories.map((category) => category.name);
     const data = calculatedCategories.map((category) => category.total);
-    const backgrounds = calculatedCategories.map((category) => category.colour);
+    const backgrounds = calculatedCategories.map((category) => category.color);
 
     setChartData({
       ...settings.data,

@@ -11,8 +11,20 @@ export const listTransactions = (
     params: { userId, startedDate, endedDate },
   });
 };
-export const UpdateTransactions = (
+
+export const updateTransactions = (
   transaction: TransactionType
 ): AxiosPromise<TransactionType> => {
-  return AxiosObject.put(`/transactions/:${transaction.id}`, transaction);
+  return AxiosObject.put(`/transactions/${transaction.id}`, transaction);
+};
+
+export const createTransaction = (
+  transaction: TransactionType,
+  userId: string
+): AxiosPromise<TransactionType> => {
+  return AxiosObject.post("/transactions", { ...transaction, userId });
+};
+
+export const deleteTransaction = (id: string): AxiosPromise => {
+  return AxiosObject.delete(`/transactions/${id}`);
 };

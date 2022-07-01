@@ -24,7 +24,7 @@ import {
 type PropsType = {
   open: boolean;
   handleClose: React.MouseEventHandler;
-  addTransactionHandler: (transaction: TransactionType) => void;
+  addTransactionHandler: (transaction: TransactionType, userId: string) => void;
   dialogType: string;
   chosenTransaction?: TransactionType;
 };
@@ -35,7 +35,7 @@ const Transaction: React.FC<PropsType> = ({
   dialogType,
   chosenTransaction,
 }) => {
-  const { categories } = useSelector(userSelector);
+  const { categories, id } = useSelector(userSelector);
   const [currentCategory, setCurrentCategory] = useState("");
   const [currentDescription, setCurrentDescription] = useState("");
   const [currentAmount, setCurrentAmount] = useState("");
@@ -43,9 +43,9 @@ const Transaction: React.FC<PropsType> = ({
     if (
       dialogType === "edit" &&
       chosenTransaction &&
-      chosenTransaction.categoryId
+      chosenTransaction.category
     ) {
-      setCurrentCategory(chosenTransaction.categoryId);
+      setCurrentCategory(chosenTransaction.category);
       setCurrentDescription(chosenTransaction.description);
       setCurrentAmount(chosenTransaction.amount.toString());
     } else {
@@ -62,23 +62,16 @@ const Transaction: React.FC<PropsType> = ({
   const changeAmountHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCurrentAmount(event.target.value);
   const submitHandler = () => {
-    axios
-      .post("https://localhost:3001/categories", {
-        name: "Home",
-        description: "Home goods",
-        icon: "AccountBalanceIcon",
-        color: "#ff8000",
-      })
-      .then((res) => console.log("res:", res))
-      .catch((err) => console.log("err:", err));
-    addTransactionHandler({
-      id: Math.random().toString(),
-      date: new Date(),
-      description: currentDescription,
-      type: dialogType as TransactionTypeType,
-      amount: Number(currentAmount),
-      categoryId: currentCategory,
-    });
+    addTransactionHandler(
+      {
+        date: new Date(),
+        description: currentDescription,
+        type: dialogType as TransactionTypeType,
+        amount: Number(currentAmount),
+        category: currentCategory,
+      },
+      id
+    );
   };
   const deleteHandler = () => {};
   return (

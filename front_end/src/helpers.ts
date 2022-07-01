@@ -15,7 +15,7 @@ export const calculateTransactions = (
   const categoriesWithSum = categories.map((category) => {
     let total = 0;
     newTransactions.forEach((transaction) => {
-      if (transaction.categoryId === category.id) {
+      if (transaction.category === category.id) {
         total = total + transaction.amount;
       }
     });

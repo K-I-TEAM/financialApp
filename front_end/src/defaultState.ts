@@ -31,12 +31,12 @@ export const defaultState = fromJS({
 export type DefaultStateType = typeof defaultState | null;
 export type GenderType = "female" | "male";
 export type TransactionType = {
-  id: string;
+  id?: string;
   date: Date;
   description: string;
   type: TransactionTypeType;
   amount: number;
-  categoryId: string | null;
+  category: string | null;
 };
 export type TransactionTypeType = "expense" | "income";
 export type CategoryType = {

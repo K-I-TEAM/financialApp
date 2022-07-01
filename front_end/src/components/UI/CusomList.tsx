@@ -41,8 +41,11 @@ const CustomList: React.FC<PropsType> = ({
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  const addTransactionHandler = (transaction: TransactionType) => {
-    dispatch(addTransaction(transaction));
+  const addTransactionHandler = (
+    transaction: TransactionType,
+    userId: string
+  ) => {
+    dispatch(addTransaction({ transaction, userId }));
     setOpenDialog(false);
   };
   const handleChooseItem = (id: string) => {
@@ -86,7 +89,7 @@ const CustomList: React.FC<PropsType> = ({
                       sx={{
                         color: categories.filter(
                           (category: CategoryType) =>
-                            category.id === item.categoryId
+                            category.id === item.category
                         )[0].color,
                       }}
                     />
