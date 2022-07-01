@@ -2,6 +2,7 @@ import { Transaction } from '../models/Transaction.js';
 import { Category } from '../models/Category.js';
 import { Op } from 'sequelize';
 import { calculateBalances } from '../helper/balance.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const listTransactions = async (req, res, next) => {
   const { userId, startedDate, endedDate } = req.query;
@@ -70,16 +71,23 @@ const createTransaction = async (req, res) => {
     `);
   }
 
+  const id = uuidv4();
+
   try {
-    const newTransaction = await Transaction.create({
+    await Transaction.create({
+      id: id,
       date,
       type,
       description,
-      category,
+      category_id: category,
       amount,
       user_id: userId,
     });
-    res.send(newTransaction);
+
+    const transaction = await Transaction.findByPk(id, {
+      include: Category,
+    });
+    res.send(transaction);
   } catch (error) {
     res.status(500).send(error);
   }
