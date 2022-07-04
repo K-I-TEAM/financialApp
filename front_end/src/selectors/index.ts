@@ -6,3 +6,4 @@ export {
   transactionsSelector,
   transactionSelector,
 } from "./transactionsSelector";
+export { balanceSelector } from "./balanceSelector";

@@ -3,15 +3,19 @@ import { take, put, call, select, takeEvery } from "redux-saga/effects";
 import { listTransactions, createTransaction } from "./../api/transaction";
 import { transactionsSelector } from "./../selectors";
 
-import { GET_TRANSACTIONS, setTransactions, ADD_TRANSACTION } from "../actions";
+import {
+  GET_TRANSACTIONS,
+  setTransactions,
+  ADD_TRANSACTION,
+  setBalance,
+} from "../actions";
+import { TransactionType } from "../defaultState";
 function daysInMonth(month: any, year: any) {
   return new Date(year, month, 0).getDate();
 }
 
 export function* getTransactionsSaga(): any {
   const { userId, date } = (yield take(GET_TRANSACTIONS)).params;
-  console.log("userId:", userId);
-  console.log("date:", date.getMonth());
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
   console.log("first date:", firstDay);
   const lastDay = new Date(
@@ -26,9 +30,28 @@ export function* getTransactionsSaga(): any {
   try {
     //API call to get transactions
     const { data } = yield call(listTransactions, userId, firstDay, lastDay);
-    console.log("trans result:", data);
-    const transactions = data;
-    yield put(setTransactions(transactions));
+    const transactions = data.map((transaction: any) => {
+      return {
+        date: transaction.date,
+        amount: Number(transaction.amount),
+        type: transaction.type,
+        category: transaction.category_id,
+        id: transaction.id,
+        description: transaction.description,
+        balance: transaction.balance,
+      };
+    });
+    const sortedTransactions = transactions.sort((a: any, b: any) => {
+      if (a.date < b.date) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+    yield put(setTransactions(sortedTransactions));
+    yield put(
+      setBalance(sortedTransactions.length ? sortedTransactions[0].balance : 0)
+    );
   } catch (error) {
     console.log("err: ", error);
   }
