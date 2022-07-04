@@ -2,6 +2,7 @@ import express from 'express';
 import userRoutes from './routes/user.js';
 import transactionRoutes from './routes/transaction.js';
 import categoryRoutes from './routes/category.js';
+import apiLayerRoutes from './routes/apiLayer.js';
 import cors from 'cors';
 import { checkToken } from './auth/checkToken.js';
 
@@ -21,5 +22,6 @@ app.use(checkToken);
 app.use(userRoutes);
 app.use(transactionRoutes);
 app.use(categoryRoutes);
+app.use(apiLayerRoutes);
 
 export default app;
