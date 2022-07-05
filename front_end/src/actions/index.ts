@@ -25,6 +25,10 @@ export {
   setTransactions,
   ADD_TRANSACTION,
   addTransaction,
+  UPDATE_TRANSACTION,
+  updateTransaction,
+  DELETE_TRANSACTION,
+  deleteTransaction,
 } from "./transactions";
 export {
   GET_CATEGORIES,

@@ -17,7 +17,11 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 
 import { TransactionType, CategoryType } from "../../defaultState";
 import Transaction from "../Transaction";
-import { addTransaction } from "./../../actions";
+import {
+  addTransaction,
+  updateTransaction,
+  deleteTransaction,
+} from "./../../actions";
 import { transactionSelector } from "./../../selectors";
 
 type PropsType = {
@@ -48,6 +52,18 @@ const CustomList: React.FC<PropsType> = ({
     dispatch(addTransaction({ transaction, userId }));
     setOpenDialog(false);
   };
+  const updateTransactionHandler = (
+    transaction: TransactionType | undefined
+  ) => {
+    dispatch(updateTransaction(transaction));
+    setOpenDialog(false);
+  };
+  const deleteTransactionHandler = (
+    transaction: TransactionType | undefined
+  ) => {
+    dispatch(deleteTransaction(transaction));
+    setOpenDialog(false);
+  };
   const handleChooseItem = (id: string) => {
     setChosenId(id);
     setOpenDialogType("edit");
@@ -55,13 +71,17 @@ const CustomList: React.FC<PropsType> = ({
   };
   return (
     <>
-      <Transaction
-        open={openDialog}
-        handleClose={handleCloseDialog}
-        dialogType={openDialogType}
-        addTransactionHandler={addTransactionHandler}
-        chosenTransaction={chosenTransaction}
-      />
+      {openDialog ? (
+        <Transaction
+          open={openDialog}
+          handleClose={handleCloseDialog}
+          dialogType={openDialogType}
+          addTransactionHandler={addTransactionHandler}
+          updateTransactionHandler={updateTransactionHandler}
+          deleteTransactionHandler={deleteTransactionHandler}
+          chosenTransaction={chosenTransaction}
+        />
+      ) : null}
       <List component="div" disablePadding sx={{ pt: 2, position: "relative" }}>
         {items ? (
           items

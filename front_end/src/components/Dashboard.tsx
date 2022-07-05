@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
   const balance = useSelector(balanceSelector);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getTransactions({ userId: user.id, date: currentDate }));
+    dispatch(getTransactions());
   }, [currentDate, dispatch, user.id]);
   return (
     <>

@@ -12,7 +12,6 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import axios from "axios";
 
 import { userSelector } from "./../selectors";
 import {
@@ -25,6 +24,8 @@ type PropsType = {
   open: boolean;
   handleClose: React.MouseEventHandler;
   addTransactionHandler: (transaction: TransactionType, userId: string) => void;
+  updateTransactionHandler: (transaction: TransactionType | undefined) => void;
+  deleteTransactionHandler: (transaction: TransactionType | undefined) => void;
   dialogType: string;
   chosenTransaction?: TransactionType;
 };
@@ -32,6 +33,8 @@ const Transaction: React.FC<PropsType> = ({
   open,
   handleClose,
   addTransactionHandler,
+  updateTransactionHandler,
+  deleteTransactionHandler,
   dialogType,
   chosenTransaction,
 }) => {
@@ -62,18 +65,29 @@ const Transaction: React.FC<PropsType> = ({
   const changeAmountHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCurrentAmount(event.target.value);
   const submitHandler = () => {
-    addTransactionHandler(
-      {
-        date: new Date(),
-        description: currentDescription,
-        type: dialogType as TransactionTypeType,
-        amount: Number(currentAmount),
-        category: currentCategory,
-      },
-      id
-    );
+    dialogType === "edit" && chosenTransaction
+      ? updateTransactionHandler({
+          date: chosenTransaction.date,
+          category: currentCategory,
+          description: currentDescription,
+          amount: Number(currentAmount),
+          type: chosenTransaction.type,
+          id: chosenTransaction.id,
+        })
+      : addTransactionHandler(
+          {
+            date: new Date(),
+            description: currentDescription,
+            type: dialogType as TransactionTypeType,
+            amount: Number(currentAmount),
+            category: currentCategory,
+          },
+          id
+        );
   };
-  const deleteHandler = () => {};
+  const deleteHandler = () => {
+    deleteTransactionHandler(chosenTransaction);
+  };
   return (
     <>
       {" "}

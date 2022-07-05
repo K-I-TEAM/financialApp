@@ -12,7 +12,7 @@ export const listTransactions = (
   });
 };
 
-export const updateTransactions = (
+export const updateTransaction = (
   transaction: TransactionType
 ): AxiosPromise<TransactionType> => {
   return AxiosObject.put(`/transactions/${transaction.id}`, transaction);
@@ -26,5 +26,6 @@ export const createTransaction = (
 };
 
 export const deleteTransaction = (id: string): AxiosPromise => {
+  console.log("api: ", id);
   return AxiosObject.delete(`/transactions/${id}`);
 };
