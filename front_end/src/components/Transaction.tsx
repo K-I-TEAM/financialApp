@@ -19,6 +19,7 @@ import {
   TransactionType,
   TransactionTypeType,
 } from "./../defaultState";
+import BasicDataPicker from "./UI/BasicDatePicker";
 
 type PropsType = {
   open: boolean;
@@ -39,6 +40,7 @@ const Transaction: React.FC<PropsType> = ({
   chosenTransaction,
 }) => {
   const { categories, id } = useSelector(userSelector);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [currentCategory, setCurrentCategory] = useState("");
   const [currentDescription, setCurrentDescription] = useState("");
   const [currentAmount, setCurrentAmount] = useState("");
@@ -48,10 +50,12 @@ const Transaction: React.FC<PropsType> = ({
       chosenTransaction &&
       chosenTransaction.category
     ) {
+      setCurrentDate(chosenTransaction.date);
       setCurrentCategory(chosenTransaction.category);
       setCurrentDescription(chosenTransaction.description);
       setCurrentAmount(chosenTransaction.amount.toString());
     } else {
+      setCurrentDate(new Date());
       setCurrentCategory("");
       setCurrentDescription("");
       setCurrentAmount("");
@@ -64,10 +68,12 @@ const Transaction: React.FC<PropsType> = ({
     setCurrentDescription(event.target.value);
   const changeAmountHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCurrentAmount(event.target.value);
+  const changeDateHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setCurrentDate(new Date(event.target.value));
   const submitHandler = () => {
     dialogType === "edit" && chosenTransaction
       ? updateTransactionHandler({
-          date: chosenTransaction.date,
+          date: currentDate,
           category: currentCategory,
           description: currentDescription,
           amount: Number(currentAmount),
@@ -76,7 +82,7 @@ const Transaction: React.FC<PropsType> = ({
         })
       : addTransactionHandler(
           {
-            date: new Date(),
+            date: currentDate,
             description: currentDescription,
             type: dialogType as TransactionTypeType,
             amount: Number(currentAmount),
@@ -94,6 +100,11 @@ const Transaction: React.FC<PropsType> = ({
       <Dialog open={open} onClose={handleClose} disableEnforceFocus>
         <DialogTitle>Transaction</DialogTitle>
         <DialogContent>
+          <BasicDataPicker
+            label="Date"
+            value={currentDate}
+            changeHandler={setCurrentDate}
+          />
           <TextField
             autoFocus
             margin="dense"

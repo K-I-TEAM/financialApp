@@ -35,6 +35,7 @@ function* getTransactionsWorker(): any {
   try {
     //API call to get transactions
     const { data } = yield call(listTransactions, userId, firstDay, lastDay);
+    console.log("data: ", data);
     const transactions = data.map((transaction: any) => {
       return {
         date: transaction.date,
@@ -54,9 +55,7 @@ function* getTransactionsWorker(): any {
       }
     });
     yield put(setTransactions(sortedTransactions));
-    yield put(
-      setBalance(sortedTransactions.length ? sortedTransactions[0].balance : 0)
-    );
+    yield put(setBalance(data.length ? data[data.length - 1].balance : 0));
   } catch (error) {
     console.log("err: ", error);
   }

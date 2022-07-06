@@ -71,17 +71,16 @@ const CustomList: React.FC<PropsType> = ({
   };
   return (
     <>
-      {openDialog ? (
-        <Transaction
-          open={openDialog}
-          handleClose={handleCloseDialog}
-          dialogType={openDialogType}
-          addTransactionHandler={addTransactionHandler}
-          updateTransactionHandler={updateTransactionHandler}
-          deleteTransactionHandler={deleteTransactionHandler}
-          chosenTransaction={chosenTransaction}
-        />
-      ) : null}
+      <Transaction
+        open={openDialog}
+        handleClose={handleCloseDialog}
+        dialogType={openDialogType}
+        addTransactionHandler={addTransactionHandler}
+        updateTransactionHandler={updateTransactionHandler}
+        deleteTransactionHandler={deleteTransactionHandler}
+        chosenTransaction={chosenTransaction}
+      />
+
       <List component="div" disablePadding sx={{ pt: 2, position: "relative" }}>
         {items ? (
           items
