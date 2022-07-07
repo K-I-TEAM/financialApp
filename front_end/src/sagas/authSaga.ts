@@ -10,6 +10,7 @@ import {
   UPDATE_USER,
 } from "../actions";
 import { listCategory } from "./../api/category";
+import { getUserId } from "../api/user";
 import { userSelector } from "../selectors";
 
 export function* authSaga(): any {
@@ -18,13 +19,11 @@ export function* authSaga(): any {
   try {
     const user = yield call([Auth, "currentUserInfo"]);
     //API call to get categories
-    console.log("user: ", user);
-    yield call(listCategory);
-    // const categories = yield call(listCategory);
-    //  console.log("categories", categories.data);
-    const categories: any = [];
+    const { id } = (yield call(getUserId, user.attributes.email)).data;
+    const categories = (yield call(listCategory, id)).data;
     yield put(
       setUser({
+        id,
         email: user.attributes.email || "",
         name: user.attributes.name || "",
         family_name: user.attributes.family_name || "",
@@ -58,7 +57,6 @@ function* updateUserWorker(payload: any): any {
   const { user } = payload;
   try {
     const currentUser = yield call([Auth, "currentAuthenticatedUser"]);
-    console.log("current us:", currentUser);
     yield call([Auth, "updateUserAttributes"], currentUser, user);
     const stateUser = yield select(userSelector);
     yield put(setUser({ ...stateUser, ...user }));

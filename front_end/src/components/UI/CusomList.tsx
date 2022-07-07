@@ -17,7 +17,11 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 
 import { TransactionType, CategoryType } from "../../defaultState";
 import Transaction from "../Transaction";
-import { addTransaction } from "./../../actions";
+import {
+  addTransaction,
+  updateTransaction,
+  deleteTransaction,
+} from "./../../actions";
 import { transactionSelector } from "./../../selectors";
 
 type PropsType = {
@@ -41,8 +45,23 @@ const CustomList: React.FC<PropsType> = ({
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  const addTransactionHandler = (transaction: TransactionType) => {
-    dispatch(addTransaction(transaction));
+  const addTransactionHandler = (
+    transaction: TransactionType,
+    userId: string
+  ) => {
+    dispatch(addTransaction({ transaction, userId }));
+    setOpenDialog(false);
+  };
+  const updateTransactionHandler = (
+    transaction: TransactionType | undefined
+  ) => {
+    dispatch(updateTransaction(transaction));
+    setOpenDialog(false);
+  };
+  const deleteTransactionHandler = (
+    transaction: TransactionType | undefined
+  ) => {
+    dispatch(deleteTransaction(transaction));
     setOpenDialog(false);
   };
   const handleChooseItem = (id: string) => {
@@ -57,8 +76,11 @@ const CustomList: React.FC<PropsType> = ({
         handleClose={handleCloseDialog}
         dialogType={openDialogType}
         addTransactionHandler={addTransactionHandler}
+        updateTransactionHandler={updateTransactionHandler}
+        deleteTransactionHandler={deleteTransactionHandler}
         chosenTransaction={chosenTransaction}
       />
+
       <List component="div" disablePadding sx={{ pt: 2, position: "relative" }}>
         {items ? (
           items
@@ -86,7 +108,7 @@ const CustomList: React.FC<PropsType> = ({
                       sx={{
                         color: categories.filter(
                           (category: CategoryType) =>
-                            category.id === item.categoryId
+                            category.id === item.category
                         )[0].color,
                       }}
                     />

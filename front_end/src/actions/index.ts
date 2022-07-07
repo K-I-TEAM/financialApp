@@ -12,7 +12,12 @@ export {
   UPDATE_USER,
   updateUser,
 } from "./auth";
-export { setCurrentDate, SET_CURRENTDATE } from "./account";
+export {
+  setCurrentDate,
+  SET_CURRENTDATE,
+  SET_BALANCE,
+  setBalance,
+} from "./account";
 export {
   GET_TRANSACTIONS,
   getTransactions,
@@ -20,6 +25,10 @@ export {
   setTransactions,
   ADD_TRANSACTION,
   addTransaction,
+  UPDATE_TRANSACTION,
+  updateTransaction,
+  DELETE_TRANSACTION,
+  deleteTransaction,
 } from "./transactions";
 export {
   GET_CATEGORIES,

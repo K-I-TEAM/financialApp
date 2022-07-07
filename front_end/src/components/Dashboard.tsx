@@ -7,6 +7,7 @@ import {
   currentDateSelector,
   userSelector,
   transactionsSelector,
+  balanceSelector,
 } from "./../selectors";
 import { getTransactions } from "./../actions";
 import CustomList from "./UI/CusomList";
@@ -15,10 +16,11 @@ const Dashboard: React.FC = () => {
   const currentDate = useSelector(currentDateSelector);
   const user = useSelector(userSelector);
   const transactions = useSelector(transactionsSelector);
+  const balance = useSelector(balanceSelector);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getTransactions({ userId: user.email, date: currentDate }));
-  }, [currentDate, dispatch, user.email]);
+    dispatch(getTransactions());
+  }, [currentDate, dispatch, user.id]);
   return (
     <>
       {" "}
@@ -27,7 +29,7 @@ const Dashboard: React.FC = () => {
           Balance
         </Box>
         <Box textAlign="center" fontWeight="bold" sx={{ pb: 2 }}>
-          23456.78 $
+          {balance} $
         </Box>
         <DashboardChart
           transactions={transactions ? transactions.toJS() : []}
