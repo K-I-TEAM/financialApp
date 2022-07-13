@@ -6,7 +6,7 @@ import { IconButton } from "@mui/material";
 
 import { currentDateSelector } from "../../selectors";
 import { setCurrentDate } from "../../actions";
-enum ChangeEnum {
+export enum ChangeEnum {
   Inc,
   Dec,
 }
@@ -15,7 +15,7 @@ type PropsType = {
   arrowType: ChangeEnum;
 };
 
-const DateChangeArrow: React.FC<PropsType> = ({
+export const DateChangeArrow: React.FC<PropsType> = ({
   settings = {
     display: "flex",
     justifyContent: "center",
@@ -44,4 +44,3 @@ const DateChangeArrow: React.FC<PropsType> = ({
     </Box>
   );
 };
-export default DateChangeArrow;

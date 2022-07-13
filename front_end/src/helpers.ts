@@ -26,3 +26,6 @@ export const calculateTransactions = (
   );
   return categoriesWithSumFiltered;
 };
+export const getMonthYearDate = (date: Date) => {
+  return date.toLocaleString("en-us", { month: "long", year: "numeric" });
+};
