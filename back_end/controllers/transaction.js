@@ -4,35 +4,45 @@ import { Op } from 'sequelize';
 import { calculateBalances } from '../helper/balance.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const listTransactions = async (req, res, next) => {
-  const { userId, startedDate, endedDate } = req.query;
+const listTransactions = async (req, res) => {
+  const { userId, startedDate, endedDate, categoryId } = req.query;
 
   try {
     let allTransactions = [];
+    let queryBuilder = {};
 
     if (!userId) {
       return res.status(400).send('userId required');
     }
 
-    if (startedDate === undefined && endedDate === undefined) {
-      allTransactions = await Transaction.findAll({
-        include: Category,
-        where: {
-          user_id: userId,
+    //Add validation
+
+    queryBuilder = {
+      ...queryBuilder,
+      user_id: userId,
+    };
+
+    if (startedDate && endedDate) {
+      queryBuilder = {
+        ...queryBuilder,
+        date: {
+          [Op.between]: [startedDate, endedDate],
         },
-      });
-    } else {
-      allTransactions = await Transaction.findAll({
-        include: Category,
-        where: {
-          user_id: userId,
-          date: {
-            [Op.between]: [startedDate, endedDate],
-          },
-        },
-        //logging: console.log,
-      });
+      };
     }
+
+    if (categoryId) {
+      queryBuilder = {
+        ...queryBuilder,
+        category_id: categoryId,
+      };
+    }
+
+    allTransactions = await Transaction.findAll({
+      include: Category,
+      where: queryBuilder,
+      //logging: console.log,
+    });
 
     const transactions = calculateBalances(allTransactions);
     res.json(transactions);
@@ -135,4 +145,37 @@ const deleteTransaction = async (req, res) => {
   }
 };
 
-export { listTransactions, createTransaction, getTransaction, updateTransaction, deleteTransaction };
+const getTransactionByCategory = async (req, res) => {
+  const { userId, categoryId } = req.query;
+
+  try {
+    let allTransactions = [];
+
+    if (!userId || !categoryId) {
+      return res.status(400).send('userId and categoryId are required');
+    }
+
+    allTransactions = await Transaction.findAll({
+      include: Category,
+      where: {
+        category_id: {
+          [Op.eq]: categoryId,
+        },
+      },
+    });
+
+    const transactions = calculateBalances(allTransactions);
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+export {
+  listTransactions,
+  createTransaction,
+  getTransaction,
+  updateTransaction,
+  deleteTransaction,
+  getTransactionByCategory,
+};
