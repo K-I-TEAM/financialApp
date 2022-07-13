@@ -145,37 +145,4 @@ const deleteTransaction = async (req, res) => {
   }
 };
 
-const getTransactionByCategory = async (req, res) => {
-  const { userId, categoryId } = req.query;
-
-  try {
-    let allTransactions = [];
-
-    if (!userId || !categoryId) {
-      return res.status(400).send('userId and categoryId are required');
-    }
-
-    allTransactions = await Transaction.findAll({
-      include: Category,
-      where: {
-        category_id: {
-          [Op.eq]: categoryId,
-        },
-      },
-    });
-
-    const transactions = calculateBalances(allTransactions);
-    res.json(transactions);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
-
-export {
-  listTransactions,
-  createTransaction,
-  getTransaction,
-  updateTransaction,
-  deleteTransaction,
-  getTransactionByCategory,
-};
+export { listTransactions, createTransaction, getTransaction, updateTransaction, deleteTransaction };
