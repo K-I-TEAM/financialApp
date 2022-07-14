@@ -4,7 +4,6 @@ const calculateBalances = (transactions) => {
   transactions.map((transaction) => {
     let { type, amount } = transaction.dataValues;
 
-    console.log('amount', amount, 'type', typeof amount);
     if (type === 'income') {
       balanceInSpecificTransaction += Number(parseFloat(amount).toFixed(2));
     } else {
