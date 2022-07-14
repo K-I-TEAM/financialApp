@@ -5,5 +5,6 @@ export { currentDateSelector } from "./currentDateSelector";
 export {
   transactionsSelector,
   transactionSelector,
+  transactionByCategorySelector,
 } from "./transactionsSelector";
 export { balanceSelector } from "./balanceSelector";

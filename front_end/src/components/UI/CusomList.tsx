@@ -25,6 +25,7 @@ import {
   deleteTransaction,
 } from "./../../actions";
 import { transactionSelector } from "./../../selectors";
+import IconSet from "./../IconSet";
 
 type PropsType = {
   items: Immutable.List<TransactionType> | null;
@@ -39,7 +40,6 @@ const CustomList: React.FC<PropsType> = ({
   maxAmount,
   categorized = false,
 }) => {
-  const [openTransactions, setOpenTransactions] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogType, setOpenDialogType] = useState("");
   const [chosenId, setChosenId] = useState("");
@@ -100,7 +100,14 @@ const CustomList: React.FC<PropsType> = ({
                 <ListItem secondaryAction={<Typography>300$</Typography>}>
                   <ListItemAvatar>
                     <Avatar sx={{ bgcolor: category.color }}>
-                      <category.icon />
+                      {IconSet.map((icon: any) =>
+                        icon.name === category.icon ? (
+                          <icon.component
+                            key={icon.name}
+                            sx={{ color: "#ffffff" }}
+                          />
+                        ) : null
+                      )}
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText primary={category.name} />
