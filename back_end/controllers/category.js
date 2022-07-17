@@ -1,4 +1,5 @@
 import { Category } from '../models/Category.js';
+import { Transaction } from '../models/Transaction.js';
 
 const listCategories = async (req, res) => {
   const { userId } = req.query;
@@ -33,6 +34,28 @@ const getCategory = async (req, res) => {
 
     res.send(category);
   } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getBalanceByCategory = async (req, res) => {
+  try {
+    const { categoryId, userId } = req.body;
+
+    if (!userId || !categoryId) {
+      return res.status(400).send('categoryId and userId are required');
+    }
+
+    const balance = await Transaction.sum('amount', {
+      where: {
+        category_id: categoryId,
+        user_id: userId,
+      },
+    });
+
+    res.status(200).json({ balance: balance });
+  } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -102,4 +125,4 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-export { listCategories, createCategory, getCategory, updateCategory, deleteCategory };
+export { listCategories, createCategory, getCategory, updateCategory, deleteCategory, getBalanceByCategory };
