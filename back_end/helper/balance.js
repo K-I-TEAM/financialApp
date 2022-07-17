@@ -5,9 +5,9 @@ const calculateBalances = (transactions) => {
     let { type, amount } = transaction.dataValues;
 
     if (type === 'income') {
-      balanceInSpecificTransaction += Number(amount).toFixed(2);
+      balanceInSpecificTransaction += Number(parseFloat(amount).toFixed(2));
     } else {
-      balanceInSpecificTransaction -= Number(amount).toFixed(2);
+      balanceInSpecificTransaction -= Number(parseFloat(amount).toFixed(2));
     }
     transaction.dataValues.balance = balanceInSpecificTransaction;
     return transaction;
