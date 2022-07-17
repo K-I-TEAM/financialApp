@@ -19,9 +19,7 @@ function* createCategoryWorker(payload: any): any {
   const { category, userId } = payload.category;
   try {
     const currentUser = yield call([Auth, "currentAuthenticatedUser"]);
-    console.log("current us:", currentUser);
     const { id } = (yield call(createCategory, category, userId)).data;
-    console.log("id", id);
     const stateUser = yield select(userSelector);
     yield put(
       setUser({
@@ -41,9 +39,7 @@ export function* createCategorySaga(): any {
 function* deleteCategoryWorker(payload: any): any {
   const { id } = payload;
   try {
-    //console.log("current us:", currentUser);
     yield call(deleteCategory, id);
-    console.log("id", id);
     const stateUser = yield select(userSelector);
     const newCategoryArray = [...stateUser.categories].filter(
       (category) => category.id !== id

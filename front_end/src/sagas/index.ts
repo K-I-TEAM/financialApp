@@ -5,6 +5,7 @@ export {
   addTransactionSaga,
   updateTransactionSaga,
   deleteTransactionSaga,
+  getTransactionsByCategorySaga,
 } from "./transactions";
 export {
   createCategorySaga,

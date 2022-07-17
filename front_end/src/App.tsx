@@ -24,7 +24,6 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("env: ", process.env);
     if (!isAuthenticated) {
       dispatch(signIn());
     }

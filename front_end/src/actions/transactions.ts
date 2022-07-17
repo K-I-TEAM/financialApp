@@ -23,3 +23,15 @@ export const deleteTransaction = makeActionCreator(
   DELETE_TRANSACTION,
   "transaction"
 );
+
+export const SET_TRANSACTIONS_BY_CATEGORY = "SET_TRANSACTIONS_BY_CATEGORY";
+export const setTransactionsByCategory = makeActionCreator(
+  SET_TRANSACTIONS_BY_CATEGORY,
+  "transactionsByCategory"
+);
+
+export const GET_TRANSACTIONS_BY_CATEGORY = "GET_TRANSACTIONS_BY_CATEGORY";
+export const getTransactionsByCategory = makeActionCreator(
+  GET_TRANSACTIONS_BY_CATEGORY,
+  "categoryId"
+);

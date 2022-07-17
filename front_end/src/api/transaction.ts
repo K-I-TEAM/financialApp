@@ -5,10 +5,11 @@ import { TransactionType } from "../defaultState";
 export const listTransactions = (
   userId: string,
   startedDate: Date,
-  endedDate: Date
+  endedDate: Date,
+  categoryId?: string | undefined
 ): AxiosPromise<TransactionType[]> => {
   return AxiosObject.get("/transactions", {
-    params: { userId, startedDate, endedDate },
+    params: { userId, startedDate, endedDate, categoryId },
   });
 };
 
@@ -26,6 +27,5 @@ export const createTransaction = (
 };
 
 export const deleteTransaction = (id: string): AxiosPromise => {
-  console.log("api: ", id);
   return AxiosObject.delete(`/transactions/${id}`);
 };

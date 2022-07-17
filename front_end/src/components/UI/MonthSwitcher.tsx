@@ -1,10 +1,14 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Box } from "@mui/system";
 import { Typography } from "@mui/material";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+
+import { DateChangeArrow, ChangeEnum } from "./DateChangeArrow";
+import { getMonthYearDate } from "./../../helpers";
+import { currentDateSelector } from "../../selectors";
 
 const MonthSwitcher: React.FC = () => {
+  const currentDate = useSelector(currentDateSelector);
   return (
     <>
       <Box
@@ -13,17 +17,9 @@ const MonthSwitcher: React.FC = () => {
         width="300px"
         sx={{ py: 3 }}
       >
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <Typography>
-            <ArrowBackIosNewIcon fontSize="small" />
-          </Typography>
-        </Box>
-        <Typography>December 2022</Typography>
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <Typography>
-            <ArrowForwardIosIcon fontSize="small" />
-          </Typography>
-        </Box>
+        <DateChangeArrow arrowType={ChangeEnum.Dec} />
+        <Typography>{getMonthYearDate(currentDate)}</Typography>
+        <DateChangeArrow arrowType={ChangeEnum.Inc} />
       </Box>
     </>
   );
