@@ -23,9 +23,15 @@ import {
   addTransaction,
   updateTransaction,
   deleteTransaction,
+  getTransactionsByCategory,
+  setTransactionsByCategory,
 } from "./../../actions";
-import { transactionSelector } from "./../../selectors";
+import {
+  transactionSelector,
+  transactionsByCategorySelector,
+} from "./../../selectors";
 import IconSet from "./../IconSet";
+import { transactionsByCategory } from "../../reducers";
 
 type PropsType = {
   items: Immutable.List<TransactionType> | null;
@@ -43,9 +49,10 @@ const CustomList: React.FC<PropsType> = ({
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogType, setOpenDialogType] = useState("");
   const [chosenId, setChosenId] = useState("");
-  const [categoryToOpen, setCategoryToOpen] = useState(null);
+  const [categoryIdToOpen, setCategoryIdToOpen] = useState("");
   const dispatch = useDispatch();
   const chosenTransaction = useSelector(transactionSelector(chosenId));
+  const transactionsByCategory = useSelector(transactionsByCategorySelector);
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
@@ -74,10 +81,12 @@ const CustomList: React.FC<PropsType> = ({
     setOpenDialog(true);
   };
   const handleClickCategory = (id: any) => {
-    if (categoryToOpen === id) {
-      setCategoryToOpen(null);
+    dispatch(setTransactionsByCategory(null));
+    if (categoryIdToOpen === id) {
+      setCategoryIdToOpen("");
     } else {
-      setCategoryToOpen(id);
+      setCategoryIdToOpen(id);
+      dispatch(getTransactionsByCategory(id));
     }
   };
   return (
@@ -115,11 +124,11 @@ const CustomList: React.FC<PropsType> = ({
               </ListItemButton>
               <Divider />
               <Collapse
-                in={category.id === categoryToOpen}
+                in={category.id === categoryIdToOpen}
                 timeout="auto"
                 unmountOnExit
               >
-                <List component="div" disablePadding>
+                {/* <List component="div" disablePadding>
                   <Typography textAlign="center">today</Typography>
                   <Divider />
                   <ListItem
@@ -163,6 +172,54 @@ const CustomList: React.FC<PropsType> = ({
                     <ListItemText primary="Towels (returned to store)" />
                   </ListItem>
                   <Divider />
+                </List> */}
+                <List
+                  component="div"
+                  disablePadding
+                  sx={{ pt: 2, position: "relative" }}
+                >
+                  {transactionsByCategory ? (
+                    transactionsByCategory
+                      .toJS()
+                      .slice(0, maxAmount)
+                      .map((item: any) => {
+                        return (
+                          <ListItem
+                            key={item.description}
+                            sx={{
+                              pl: 6,
+                              borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                            }}
+                            secondaryAction={
+                              <Typography>
+                                {item.type === "expense" ? "- " : null}
+                                {item.amount}$
+                              </Typography>
+                            }
+                            onClick={() => handleChooseItem(item.id)}
+                          >
+                            <ListItemAvatar>
+                              <Brightness1Icon
+                                fontSize="small"
+                                sx={{
+                                  color: categories.filter(
+                                    (category: CategoryType) =>
+                                      category.id === item.category
+                                  )[0].color,
+                                }}
+                              />
+                            </ListItemAvatar>
+                            <ListItemText primary={item.description} />
+                          </ListItem>
+                        );
+                      })
+                  ) : (
+                    <>
+                      {[...Array(2)].map((_, index) => (
+                        <Skeleton key={index} height={50} />
+                      ))}
+                    </>
+                  )}
                 </List>
               </Collapse>
             </div>

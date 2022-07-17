@@ -29,8 +29,8 @@ export {
   updateTransaction,
   DELETE_TRANSACTION,
   deleteTransaction,
-  SET_CATEGORIES_WITH_TRANSACTIONS,
-  setCategoriesWithTransactions,
+  SET_TRANSACTIONS_BY_CATEGORY,
+  setTransactionsByCategory,
   GET_TRANSACTIONS_BY_CATEGORY,
   getTransactionsByCategory,
 } from "./transactions";

@@ -22,11 +22,7 @@ export const transactionSelector = (id: string) => (state: AppStateType) => {
   }
 };
 
-export const transactionByCategorySelector =
-  (categoryId: string) => (state: AppStateType) => {
-    const categoriesWithTransactions = transactionsSelector(state);
-    if (categoriesWithTransactions[categoryId]) {
-      return categoriesWithTransactions[categoryId].toJS();
-    }
-    return [];
-  };
+export const transactionsByCategorySelector = createSelector(
+  (state: AppStateType) => state.get(`transactionsByCategory`),
+  (transactionsByCategory) => transactionsByCategory
+);

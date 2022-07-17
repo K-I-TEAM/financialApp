@@ -16,6 +16,8 @@ import {
   UPDATE_TRANSACTION,
   DELETE_TRANSACTION,
   getTransactions,
+  GET_TRANSACTIONS_BY_CATEGORY,
+  setTransactionsByCategory,
 } from "../actions";
 function daysInMonth(month: any, year: any) {
   return new Date(year, month, 0).getDate();
@@ -35,7 +37,6 @@ function* getTransactionsWorker(): any {
   try {
     //API call to get transactions
     const { data } = yield call(listTransactions, userId, firstDay, lastDay);
-    console.log("data: ", data);
     const transactions = data.map((transaction: any) => {
       return {
         date: transaction.date,
@@ -105,4 +106,58 @@ function* deleteTransactionWorker(payload: any) {
 
 export function* deleteTransactionSaga(): any {
   yield takeEvery(DELETE_TRANSACTION, deleteTransactionWorker);
+}
+
+function* getTransactionsByCategoryWorker(payload: any): any {
+  const { categoryId } = payload;
+  const userId = (yield select(userSelector)).id;
+  const date = yield select(currentDateSelector);
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  const lastDay = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    daysInMonth(date.getMonth() + 1, date.getFullYear()),
+    23,
+    59,
+    59
+  );
+  try {
+    //API call to get transactions
+    const { data } = yield call(
+      listTransactions,
+      userId,
+      firstDay,
+      lastDay,
+      categoryId
+    );
+    const transactions = data.map((transaction: any) => {
+      return {
+        date: transaction.date,
+        amount: Number(transaction.amount),
+        type: transaction.type,
+        category: transaction.category_id,
+        id: transaction.id,
+        description: transaction.description,
+        balance: transaction.balance,
+      };
+    });
+    const sortedTransactions = transactions.sort((a: any, b: any) => {
+      if (a.date < b.date) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+
+    yield put(setTransactionsByCategory(sortedTransactions));
+  } catch (error) {
+    console.log("err: ", error);
+  }
+}
+
+export function* getTransactionsByCategorySaga(): any {
+  yield takeEvery(
+    GET_TRANSACTIONS_BY_CATEGORY,
+    getTransactionsByCategoryWorker
+  );
 }

@@ -18,9 +18,7 @@ const BasicDatePicker = ({ label, value, changeHandler }: PropsType) => {
         value={new Date(value)}
         autoFocus
         onChange={(newValue) => {
-          console.log(newValue?.toLocaleDateString());
           const param = newValue ? newValue.toISOString().slice(0, 10) : "";
-          // console.log(new Date(param));
           changeHandler(param);
         }}
         renderInput={(params) => <TextField {...params} />}

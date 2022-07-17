@@ -22,7 +22,7 @@ const defaultAccountState = {
   spent: 0 as number,
   currentDate: new Date(),
   transactions: null as Array<TransactionType> | null,
-  categoriesWithTransactions: {},
+  transactionsByCategory: null as Array<TransactionType> | null,
 };
 export const defaultState = fromJS({
   ...defaultUserState,
