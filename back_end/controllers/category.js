@@ -63,15 +63,12 @@ const getBalanceByCategory = async (req, res) => {
       };
     }
 
-    console.log('queryBuilder', queryBuilder);
-
     const balance = await Transaction.sum('amount', {
       where: queryBuilder,
     });
 
     res.status(200).json({ balance: balance });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
