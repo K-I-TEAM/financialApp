@@ -1,5 +1,6 @@
 import { Category } from '../models/Category.js';
 import { Transaction } from '../models/Transaction.js';
+import { Op } from 'sequelize';
 
 const listCategories = async (req, res) => {
   const { userId } = req.query;
@@ -40,21 +41,37 @@ const getCategory = async (req, res) => {
 
 const getBalanceByCategory = async (req, res) => {
   try {
-    const { categoryId, userId } = req.body;
+    const { categoryId, userId, startedDate, endedDate } = req.body;
+
+    let queryBuilder = {};
 
     if (!userId || !categoryId) {
       return res.status(400).send('categoryId and userId are required');
     }
 
+    queryBuilder = {
+      category_id: categoryId,
+      user_id: userId,
+    };
+
+    if (startedDate && endedDate) {
+      queryBuilder = {
+        ...queryBuilder,
+        date: {
+          [Op.between]: [startedDate, endedDate],
+        },
+      };
+    }
+
+    console.log('queryBuilder', queryBuilder);
+
     const balance = await Transaction.sum('amount', {
-      where: {
-        category_id: categoryId,
-        user_id: userId,
-      },
+      where: queryBuilder,
     });
 
     res.status(200).json({ balance: balance });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
