@@ -8,3 +8,4 @@ export {
   transactionsByCategorySelector,
 } from "./transactionsSelector";
 export { balanceSelector } from "./balanceSelector";
+export { errorSelector } from "./errorSelector";

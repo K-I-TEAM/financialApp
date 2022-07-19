@@ -44,3 +44,4 @@ export {
   UPDATE_CATEGORY,
   updateCategory,
 } from "./categories";
+export { SET_ERROR, setError } from "./error";
