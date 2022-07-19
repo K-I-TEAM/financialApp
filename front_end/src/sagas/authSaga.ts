@@ -8,6 +8,7 @@ import {
   SIGN_OUT,
   setIsLoading,
   UPDATE_USER,
+  setError,
 } from "../actions";
 import { listCategory } from "./../api/category";
 import { getUserId } from "../api/user";
@@ -35,7 +36,7 @@ export function* authSaga(): any {
     );
     yield put(setIsAuthenticated(true));
   } catch (error) {
-    console.log("err: ", error);
+    yield put(setError(error));
     yield put(setIsAuthenticated(false));
     yield put(setUser({ email: null, name: null }));
   }
@@ -49,7 +50,7 @@ export function* signOutSaga(): any {
     yield put(setIsAuthenticated(false));
     yield put(setUser({ email: null, name: null }));
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 
@@ -61,7 +62,7 @@ function* updateUserWorker(payload: any): any {
     const stateUser = yield select(userSelector);
     yield put(setUser({ ...stateUser, ...user }));
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 

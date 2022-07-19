@@ -1,12 +1,19 @@
 import { Alert, AlertTitle } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+
+import { setError } from "./../../actions";
+import { errorSelector } from "./../../selectors";
 
 const Error: React.FC = () => {
-  return (
-    <Alert severity="error">
+  const error = useSelector(errorSelector);
+  const dispatch = useDispatch();
+
+  return error ? (
+    <Alert onClose={() => dispatch(setError(null))} severity="error">
       <AlertTitle>Error</AlertTitle>
-      This is an error alert — <strong>check it out!</strong>
+      {error}
     </Alert>
-  );
+  ) : null;
 };
 
 export default Error;

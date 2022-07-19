@@ -4,6 +4,7 @@ import {
   setUser,
   DELETE_CATEGORY,
   UPDATE_CATEGORY,
+  setError,
 } from "../actions";
 
 import Auth from "./../store/user/auth";
@@ -28,7 +29,7 @@ function* createCategoryWorker(payload: any): any {
       })
     );
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 
@@ -51,7 +52,7 @@ function* deleteCategoryWorker(payload: any): any {
       })
     );
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 
@@ -76,7 +77,7 @@ function* updateCategoryWorker(payload: any): any {
       })
     );
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 
