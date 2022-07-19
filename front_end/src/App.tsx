@@ -17,6 +17,7 @@ import NavBar from "./components/UI/NavBar";
 import { routes, RouteType } from "./routs";
 
 import { container } from "./styles";
+import Error from "./components/UI/Error";
 
 function App() {
   const isAuthenticated = useSelector(isAuthenticatedSelector);
@@ -50,6 +51,7 @@ function App() {
         <Router>
           {" "}
           <Paper elevation={6} sx={container}>
+            <Error />
             {isAuthenticated ? <NavBar /> : null}
 
             <Routes>
