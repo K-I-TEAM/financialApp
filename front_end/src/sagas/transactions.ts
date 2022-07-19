@@ -18,6 +18,7 @@ import {
   getTransactions,
   GET_TRANSACTIONS_BY_CATEGORY,
   setTransactionsByCategory,
+  setError,
 } from "../actions";
 function daysInMonth(month: any, year: any) {
   return new Date(year, month, 0).getDate();
@@ -58,7 +59,7 @@ function* getTransactionsWorker(): any {
     yield put(setTransactions(sortedTransactions));
     yield put(setBalance(data.length ? data[data.length - 1].balance : 0));
   } catch (error) {
-    console.log("err: ", error);
+    yield put(setError(error));
   }
 }
 export function* getTransactionsSaga(): any {
@@ -72,7 +73,7 @@ function* addTransactionWorker(payload: any): any {
     yield call(createTransaction, transaction, userId);
     yield put(getTransactions());
   } catch (error) {
-    console.log("err: ", error);
+    yield put(setError(error));
   }
 }
 
@@ -86,7 +87,7 @@ function* updateTransactionWorker(payload: any) {
     yield call(updateTransaction, { ...transaction, balance: undefined });
     yield put(getTransactions());
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 
@@ -100,7 +101,7 @@ function* deleteTransactionWorker(payload: any) {
     yield call(deleteTransaction, transaction.id);
     yield put(getTransactions());
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 
@@ -151,7 +152,7 @@ function* getTransactionsByCategoryWorker(payload: any): any {
 
     yield put(setTransactionsByCategory(sortedTransactions));
   } catch (error) {
-    console.log("err: ", error);
+    yield put(setError(error));
   }
 }
 

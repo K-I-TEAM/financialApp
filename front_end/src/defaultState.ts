@@ -24,11 +24,16 @@ const defaultAccountState = {
   transactions: null as Array<TransactionType> | null,
   transactionsByCategory: null as Array<TransactionType> | null,
 };
+const defaultErrorState = {
+  error: null as Object | string | null,
+};
 export const defaultState = fromJS({
   ...defaultUserState,
   ...defaultAccountState,
+  ...defaultErrorState,
 });
 
+export type ErrorType = typeof defaultErrorState;
 export type DefaultStateType = typeof defaultState | null;
 export type GenderType = "female" | "male";
 export type TransactionType = {
