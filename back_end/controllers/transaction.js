@@ -35,13 +35,13 @@ const listTransactions = async (req, res, next) => {
     }
 
     const transactions = calculateBalances(allTransactions);
-    res.json(transactions);
+    return res.json(transactions);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const getTransaction = async (req, res) => {
+const getTransaction = async (req, res, next) => {
   const { id } = req.params;
   try {
     const transaction = await Transaction.findOne({
@@ -55,13 +55,13 @@ const getTransaction = async (req, res) => {
       return res.status(404).json({ message: "Transaction doesn't exists" });
     }
 
-    res.send(transaction);
+    return res.send(transaction);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const createTransaction = async (req, res) => {
+const createTransaction = async (req, res, next) => {
   const { date, type, description, category, amount, userId } = req.body;
 
   if (!date || !type || !description || !category || !amount || !userId) {
@@ -87,13 +87,14 @@ const createTransaction = async (req, res) => {
     const transaction = await Transaction.findByPk(id, {
       include: Category,
     });
-    res.send(transaction);
+
+    return res.send(transaction);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const updateTransaction = async (req, res) => {
+const updateTransaction = async (req, res, next) => {
   const { id } = req.params;
   const { date, type, description, category, amount } = req.body;
 
@@ -115,23 +116,29 @@ const updateTransaction = async (req, res) => {
 
     await transaction.save();
 
-    res.send(transaction);
+    return res.send(transaction);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const deleteTransaction = async (req, res) => {
+const deleteTransaction = async (req, res, next) => {
   const { id } = req.params;
   try {
-    await Transaction.destroy({
-      where: {
-        id: id,
-      },
-    });
-    res.send(204);
+    const transaction = await Transaction.findByPk(id);
+
+    if (!transaction) {
+      return res.status(400).send(`Transaction do not exists`);
+    } else {
+      const result = await Transaction.destroy({
+        where: {
+          id: id,
+        },
+      });
+      return res.send(200).send(`Transaction deleted ${result}`);
+    }
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 

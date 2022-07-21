@@ -12,7 +12,7 @@ const listCategories = async (req, res, next) => {
         user_id: userId,
       },
     });
-    res.send(allCategories);
+    return res.send(allCategories);
   } catch (error) {
     next(error);
   }
@@ -31,13 +31,13 @@ const getCategory = async (req, res, next) => {
       return res.status(404).json({ message: "Category doesn't exists" });
     }
 
-    res.send(category);
+    return res.send(category);
   } catch (error) {
     next(error);
   }
 };
 
-const createCategory = async (req, res) => {
+const createCategory = async (req, res, next) => {
   const { name, description, icon, color, userId } = req.body;
 
   if (!name || !description || !icon || !color || !userId) {
@@ -55,13 +55,13 @@ const createCategory = async (req, res) => {
       color,
       user_id: userId,
     });
-    res.send(newCategory);
+    return res.send(newCategory);
   } catch (error) {
     next(error);
   }
 };
 
-const updateCategory = async (req, res) => {
+const updateCategory = async (req, res, next) => {
   const { id } = req.params;
   const { name, description, icon, color } = req.body;
 
@@ -82,21 +82,27 @@ const updateCategory = async (req, res) => {
 
     await category.save();
 
-    res.send(category);
+    return res.send(category);
   } catch (error) {
     next(error);
   }
 };
 
-const deleteCategory = async (req, res) => {
+const deleteCategory = async (req, res, next) => {
   const { id } = req.params;
+
   try {
-    await Category.destroy({
-      where: {
-        id: id,
-      },
-    });
-    res.send(204);
+    const category = await Category.findByPk(id);
+    if (!category) {
+      return res.status(400).send(`Category do not exists`);
+    } else {
+      const result = await Category.destroy({
+        where: {
+          id: id,
+        },
+      });
+      return res.status(200).send(`Category deleted ${result}`);
+    }
   } catch (error) {
     next(error);
   }
