@@ -1,15 +1,15 @@
 import { User } from '../models/User.js';
 
-const listUsers = async (req, res) => {
+const listUsers = async (_req, res, next) => {
   try {
     const allUsers = await User.findAll();
-    res.send(allUsers);
+    return res.send(allUsers);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   const { id } = req.params;
   try {
     const user = await User.findOne({
@@ -22,34 +22,36 @@ const getUser = async (req, res) => {
       return res.status(404).json({ message: "User doesn't exists" });
     }
 
-    res.send(user);
+    return res.send(user);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
 const createUser = async (params) => {
   const { name, email } = params;
 
-  try {
-    const user = await User.create({
-      name,
-      email,
-    });
-    if (user.dataValues.id) {
-      return user.dataValues;
-    }
-    return user;
-  } catch (error) {
-    return error;
+  const user = await User.create({
+    name,
+    email,
+  });
+  if (user.dataValues.id) {
+    return user.dataValues;
   }
+  return user;
 };
 
 //Add more fields and PATCH
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   const { id } = req.params;
   const { name, surname, email, gender } = req.body;
 
+  if (!name || !surname || !email || !gender) {
+    return res.status(400).send(`
+    Those fields are required:
+    name, surname, email, gender
+    `);
+  }
   try {
     const user = await User.findByPk(id);
 
@@ -60,27 +62,34 @@ const updateUser = async (req, res) => {
 
     await user.save();
 
-    res.send(user);
+    return res.send(user);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   const { id } = req.params;
+
   try {
-    await User.destroy({
-      where: {
-        id: id,
-      },
-    });
-    res.send(204);
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(400).send(`User do not exists`);
+    } else {
+      const result = await User.destroy({
+        where: {
+          id: id,
+        },
+      });
+      return res.status(200).send(`User deleted ${result}`);
+    }
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const getUserId = async (req, res) => {
+const getUserId = async (req, res, next) => {
   const { email } = req.params;
   try {
     const user = await User.findOne({
@@ -93,31 +102,25 @@ const getUserId = async (req, res) => {
       return res.status(404).json({ message: "User doesn't exists" });
     }
 
-    res.send({
-      id: user.id,
-    });
+    return res.send({ id: user.id });
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
 //NOT REST API
 const getUserByEmail = async (email) => {
-  try {
-    const user = await User.findOne({
-      where: {
-        email: email,
-      },
-    });
+  const user = await User.findOne({
+    where: {
+      email: email,
+    },
+  });
 
-    if (!user) {
-      return false;
-    }
-
-    return user.dataValues;
-  } catch (error) {
-    console.log('error', error);
+  if (!user) {
+    return false;
   }
+
+  return user.dataValues;
 };
 
 export { listUsers, createUser, getUser, updateUser, deleteUser, getUserByEmail, getUserId };
