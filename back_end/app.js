@@ -10,6 +10,8 @@ import { checkToken } from './auth/checkToken.js';
 
 import cors from 'cors';
 
+import { errorLogger, errorResponder, invalidPathHandler } from './helper/errorHandler.js';
+
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -17,24 +19,6 @@ const corsOptions = {
 };
 
 const app = express();
-
-// Error handling Middleware functions
-const errorLogger = (error, request, response, next) => {
-  console.log(`error ${error.message}`);
-  next(error); // calling next middleware
-};
-
-const errorResponder = (error, request, response, next) => {
-  response.header('Content-Type', 'application/json');
-
-  const status = error.status || 400;
-  response.status(status).send(error.message);
-};
-
-const invalidPathHandler = (request, response, next) => {
-  response.status(400);
-  response.send(`Invalid path, ${request.url} does not exists`);
-};
 
 app.use(cors(corsOptions));
 app.use(express.json());
