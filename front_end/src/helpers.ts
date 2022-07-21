@@ -15,7 +15,7 @@ export const calculateTransactions = (
   const categoriesWithSum = categories.map((category) => {
     let total = 0;
     newTransactions.forEach((transaction) => {
-      if (transaction.categoryId === category.id) {
+      if (transaction.category === category.id) {
         total = total + transaction.amount;
       }
     });
@@ -25,4 +25,7 @@ export const calculateTransactions = (
     (category) => category.total > 0
   );
   return categoriesWithSumFiltered;
+};
+export const getMonthYearDate = (date: Date) => {
+  return date.toLocaleString("en-us", { month: "long", year: "numeric" });
 };

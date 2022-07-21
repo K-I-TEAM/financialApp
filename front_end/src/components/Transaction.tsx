@@ -12,7 +12,6 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import axios from "axios";
 
 import { userSelector } from "./../selectors";
 import {
@@ -20,11 +19,14 @@ import {
   TransactionType,
   TransactionTypeType,
 } from "./../defaultState";
+import BasicDataPicker from "./UI/BasicDatePicker";
 
 type PropsType = {
   open: boolean;
   handleClose: React.MouseEventHandler;
-  addTransactionHandler: (transaction: TransactionType) => void;
+  addTransactionHandler: (transaction: TransactionType, userId: string) => void;
+  updateTransactionHandler: (transaction: TransactionType | undefined) => void;
+  deleteTransactionHandler: (transaction: TransactionType | undefined) => void;
   dialogType: string;
   chosenTransaction?: TransactionType;
 };
@@ -32,10 +34,13 @@ const Transaction: React.FC<PropsType> = ({
   open,
   handleClose,
   addTransactionHandler,
+  updateTransactionHandler,
+  deleteTransactionHandler,
   dialogType,
   chosenTransaction,
 }) => {
-  const { categories } = useSelector(userSelector);
+  const { categories, id } = useSelector(userSelector);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [currentCategory, setCurrentCategory] = useState("");
   const [currentDescription, setCurrentDescription] = useState("");
   const [currentAmount, setCurrentAmount] = useState("");
@@ -43,12 +48,14 @@ const Transaction: React.FC<PropsType> = ({
     if (
       dialogType === "edit" &&
       chosenTransaction &&
-      chosenTransaction.categoryId
+      chosenTransaction.category
     ) {
-      setCurrentCategory(chosenTransaction.categoryId);
+      setCurrentDate(chosenTransaction.date);
+      setCurrentCategory(chosenTransaction.category);
       setCurrentDescription(chosenTransaction.description);
       setCurrentAmount(chosenTransaction.amount.toString());
     } else {
+      setCurrentDate(new Date());
       setCurrentCategory("");
       setCurrentDescription("");
       setCurrentAmount("");
@@ -61,32 +68,43 @@ const Transaction: React.FC<PropsType> = ({
     setCurrentDescription(event.target.value);
   const changeAmountHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCurrentAmount(event.target.value);
+  const changeDateHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setCurrentDate(new Date(event.target.value));
   const submitHandler = () => {
-    axios
-      .post("https://localhost:3001/categories", {
-        name: "Home",
-        description: "Home goods",
-        icon: "AccountBalanceIcon",
-        color: "#ff8000",
-      })
-      .then((res) => console.log("res:", res))
-      .catch((err) => console.log("err:", err));
-    addTransactionHandler({
-      id: Math.random().toString(),
-      date: new Date(),
-      description: currentDescription,
-      type: dialogType as TransactionTypeType,
-      amount: Number(currentAmount),
-      categoryId: currentCategory,
-    });
+    dialogType === "edit" && chosenTransaction
+      ? updateTransactionHandler({
+          date: currentDate,
+          category: currentCategory,
+          description: currentDescription,
+          amount: Number(currentAmount),
+          type: chosenTransaction.type,
+          id: chosenTransaction.id,
+        })
+      : addTransactionHandler(
+          {
+            date: currentDate,
+            description: currentDescription,
+            type: dialogType as TransactionTypeType,
+            amount: Number(currentAmount),
+            category: currentCategory,
+          },
+          id
+        );
   };
-  const deleteHandler = () => {};
+  const deleteHandler = () => {
+    deleteTransactionHandler(chosenTransaction);
+  };
   return (
     <>
       {" "}
       <Dialog open={open} onClose={handleClose} disableEnforceFocus>
         <DialogTitle>Transaction</DialogTitle>
         <DialogContent>
+          <BasicDataPicker
+            label="Date"
+            value={currentDate}
+            changeHandler={setCurrentDate}
+          />
           <TextField
             autoFocus
             margin="dense"

@@ -2,13 +2,30 @@ import { AxiosPromise } from "@aws-amplify/storage/node_modules/axios";
 import { AxiosObject } from "./axiosObject ";
 import { TransactionType } from "../defaultState";
 
-export const listTransactions = (): AxiosPromise<TransactionType[]> => {
+export const listTransactions = (
+  userId: string,
+  startedDate: Date,
+  endedDate: Date,
+  categoryId?: string | undefined
+): AxiosPromise<TransactionType[]> => {
   return AxiosObject.get("/transactions", {
-    params: { startedDate: Date, endedDate: Date },
+    params: { userId, startedDate, endedDate, categoryId },
   });
 };
-export const UpdateTransactions = (
+
+export const updateTransaction = (
   transaction: TransactionType
 ): AxiosPromise<TransactionType> => {
-  return AxiosObject.put(`/transactions/:${transaction.id}`, transaction);
+  return AxiosObject.put(`/transactions/${transaction.id}`, transaction);
+};
+
+export const createTransaction = (
+  transaction: TransactionType,
+  userId: string
+): AxiosPromise<TransactionType> => {
+  return AxiosObject.post("/transactions", { ...transaction, userId });
+};
+
+export const deleteTransaction = (id: string): AxiosPromise => {
+  return AxiosObject.delete(`/transactions/${id}`);
 };

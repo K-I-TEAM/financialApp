@@ -1,4 +1,6 @@
 import { Category } from '../models/Category.js';
+import { Transaction } from '../models/Transaction.js';
+import { Op } from 'sequelize';
 
 const listCategories = async (req, res, next) => {
   const { userId } = req.query;
@@ -37,7 +39,41 @@ const getCategory = async (req, res, next) => {
   }
 };
 
-const createCategory = async (req, res, next) => {
+const getBalanceByCategory = async (req, res) => {
+  try {
+    const { categoryId, userId, startedDate, endedDate } = req.body;
+
+    let queryBuilder = {};
+
+    if (!userId || !categoryId) {
+      return res.status(400).send('categoryId and userId are required');
+    }
+
+    queryBuilder = {
+      category_id: categoryId,
+      user_id: userId,
+    };
+
+    if (startedDate && endedDate) {
+      queryBuilder = {
+        ...queryBuilder,
+        date: {
+          [Op.between]: [startedDate, endedDate],
+        },
+      };
+    }
+
+    const balance = await Transaction.sum('amount', {
+      where: queryBuilder,
+    });
+
+    res.status(200).json({ balance: balance });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const createCategory = async (req, res) => {
   const { name, description, icon, color, userId } = req.body;
 
   if (!name || !description || !icon || !color || !userId) {
@@ -108,4 +144,4 @@ const deleteCategory = async (req, res, next) => {
   }
 };
 
-export { listCategories, createCategory, getCategory, updateCategory, deleteCategory };
+export { listCategories, createCategory, getCategory, updateCategory, deleteCategory, getBalanceByCategory };

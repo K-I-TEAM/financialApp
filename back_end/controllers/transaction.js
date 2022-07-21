@@ -4,35 +4,45 @@ import { Op } from 'sequelize';
 import { calculateBalances } from '../helper/balance.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const listTransactions = async (req, res, next) => {
-  const { userId, startedDate, endedDate } = req.query;
+const listTransactions = async (req, res) => {
+  const { userId, startedDate, endedDate, categoryId } = req.query;
 
   try {
     let allTransactions = [];
+    let queryBuilder = {};
 
     if (!userId) {
       return res.status(400).send('userId required');
     }
 
-    if (startedDate === undefined && endedDate === undefined) {
-      allTransactions = await Transaction.findAll({
-        include: Category,
-        where: {
-          user_id: userId,
+    //Add validation
+
+    queryBuilder = {
+      ...queryBuilder,
+      user_id: userId,
+    };
+
+    if (startedDate && endedDate) {
+      queryBuilder = {
+        ...queryBuilder,
+        date: {
+          [Op.between]: [startedDate, endedDate],
         },
-      });
-    } else {
-      allTransactions = await Transaction.findAll({
-        include: Category,
-        where: {
-          user_id: userId,
-          date: {
-            [Op.between]: [startedDate, endedDate],
-          },
-        },
-        //logging: console.log,
-      });
+      };
     }
+
+    if (categoryId) {
+      queryBuilder = {
+        ...queryBuilder,
+        category_id: categoryId,
+      };
+    }
+
+    allTransactions = await Transaction.findAll({
+      include: Category,
+      where: queryBuilder,
+      //logging: console.log,
+    });
 
     const transactions = calculateBalances(allTransactions);
     return res.json(transactions);

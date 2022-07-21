@@ -13,9 +13,6 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log("user: ", user);
-  }, [user]);
   return (
     <>
       {" "}

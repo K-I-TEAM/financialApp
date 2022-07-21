@@ -3,6 +3,7 @@ import { fromJS } from "immutable";
 const defaultUserState = {
   isAuthenticated: false,
   user: {
+    id: null as string | null,
     email: null as string | null,
     name: null as string | null,
     family_name: null as string | null,
@@ -21,21 +22,27 @@ const defaultAccountState = {
   spent: 0 as number,
   currentDate: new Date(),
   transactions: null as Array<TransactionType> | null,
+  transactionsByCategory: null as Array<TransactionType> | null,
+};
+const defaultErrorState = {
+  error: null as Object | string | null,
 };
 export const defaultState = fromJS({
   ...defaultUserState,
   ...defaultAccountState,
+  ...defaultErrorState,
 });
 
+export type ErrorType = typeof defaultErrorState;
 export type DefaultStateType = typeof defaultState | null;
 export type GenderType = "female" | "male";
 export type TransactionType = {
-  id: string;
+  id?: string;
   date: Date;
   description: string;
   type: TransactionTypeType;
   amount: number;
-  categoryId: string | null;
+  category: string | null;
 };
 export type TransactionTypeType = "expense" | "income";
 export type CategoryType = {

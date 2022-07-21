@@ -4,6 +4,7 @@ import {
   setUser,
   DELETE_CATEGORY,
   UPDATE_CATEGORY,
+  setError,
 } from "../actions";
 
 import Auth from "./../store/user/auth";
@@ -16,12 +17,10 @@ import { userSelector } from "../selectors";
 import { CategoryType } from "../defaultState";
 
 function* createCategoryWorker(payload: any): any {
-  const { category } = payload;
+  const { category, userId } = payload.category;
   try {
     const currentUser = yield call([Auth, "currentAuthenticatedUser"]);
-    console.log("current us:", currentUser);
-    const { id } = (yield call(createCategory, category)).data;
-    console.log("id", id);
+    const { id } = (yield call(createCategory, category, userId)).data;
     const stateUser = yield select(userSelector);
     yield put(
       setUser({
@@ -30,7 +29,7 @@ function* createCategoryWorker(payload: any): any {
       })
     );
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 
@@ -41,9 +40,7 @@ export function* createCategorySaga(): any {
 function* deleteCategoryWorker(payload: any): any {
   const { id } = payload;
   try {
-    //console.log("current us:", currentUser);
     yield call(deleteCategory, id);
-    console.log("id", id);
     const stateUser = yield select(userSelector);
     const newCategoryArray = [...stateUser.categories].filter(
       (category) => category.id !== id
@@ -55,7 +52,7 @@ function* deleteCategoryWorker(payload: any): any {
       })
     );
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 
@@ -80,7 +77,7 @@ function* updateCategoryWorker(payload: any): any {
       })
     );
   } catch (err) {
-    console.log(err);
+    yield put(setError(err));
   }
 }
 

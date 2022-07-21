@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Typography from "@mui/material/Typography";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -15,15 +16,31 @@ import TextField from "@mui/material/TextField";
 
 import WideSwitch from "./WideSwitch";
 import MonthSwitcher from "./UI/MonthSwitcher";
+import {
+  currentDateSelector,
+  userSelector,
+  transactionsSelector,
+  balanceSelector,
+} from "./../selectors";
+import { getTransactions } from "./../actions";
+import CustomList from "./UI/CusomList";
 
 const Transactions: React.FC = () => {
   const [open, setOpen] = React.useState(false);
-  const [checked, setChecked] = React.useState(true);
+  const [categorized, setCategorized] = React.useState(true);
   const [currency, setCurrency] = React.useState("EUR");
   const [selectedId, setSelectedId] = React.useState(null);
+  const currentDate = useSelector(currentDateSelector);
+  const user = useSelector(userSelector);
+  const transactions = useSelector(transactionsSelector);
+  const balance = useSelector(balanceSelector);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getTransactions());
+  }, [currentDate, dispatch, user.id]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+    setCategorized(event.target.checked);
   };
 
   const handleClick = () => {
@@ -57,11 +74,11 @@ const Transactions: React.FC = () => {
           Balance
         </Box>
         <Box textAlign="center" fontWeight="bold" sx={{ pb: 2 }}>
-          23456.78 $
+          {balance} $
         </Box>
         <Box textAlign="center">
           <WideSwitch
-            checked={checked}
+            checked={categorized}
             onChange={handleChange}
             //  inputProps={{ "aria-label": "controlled" }}
           />
@@ -89,7 +106,12 @@ const Transactions: React.FC = () => {
           </TextField>
         </Box>
       </Box>
-      <List>
+      <CustomList
+        items={transactions}
+        categories={user.categories}
+        categorized={categorized}
+      />
+      {/* <List>
         <ListItemButton onClick={handleClick}>
           <ListItem secondaryAction={<Typography>300$</Typography>}>
             <ListItemAvatar>
@@ -167,7 +189,7 @@ const Transactions: React.FC = () => {
           </ListItem>
         </ListItemButton>
         <Divider />
-      </List>
+      </List> */}
     </div>
   );
 };
