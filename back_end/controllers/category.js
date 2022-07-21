@@ -1,6 +1,6 @@
 import { Category } from '../models/Category.js';
 
-const listCategories = async (req, res) => {
+const listCategories = async (req, res, next) => {
   const { userId } = req.query;
 
   if (!userId) {
@@ -14,11 +14,11 @@ const listCategories = async (req, res) => {
     });
     res.send(allCategories);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const getCategory = async (req, res) => {
+const getCategory = async (req, res, next) => {
   const { id } = req.params;
   try {
     const category = await Category.findOne({
@@ -33,7 +33,7 @@ const getCategory = async (req, res) => {
 
     res.send(category);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
@@ -57,7 +57,7 @@ const createCategory = async (req, res) => {
     });
     res.send(newCategory);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
@@ -84,7 +84,7 @@ const updateCategory = async (req, res) => {
 
     res.send(category);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
@@ -98,7 +98,7 @@ const deleteCategory = async (req, res) => {
     });
     res.send(204);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
