@@ -11,4 +11,5 @@ export {
   createCategorySaga,
   deleteCategorySaga,
   updateCategorySaga,
+  categoriesWithAmountSaga,
 } from "./categoriesSaga";

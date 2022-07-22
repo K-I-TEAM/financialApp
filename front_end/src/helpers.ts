@@ -29,3 +29,6 @@ export const calculateTransactions = (
 export const getMonthYearDate = (date: Date) => {
   return date.toLocaleString("en-us", { month: "long", year: "numeric" });
 };
+export function daysInMonth(month: any, year: any) {
+  return new Date(year, month, 0).getDate();
+}

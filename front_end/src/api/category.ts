@@ -24,3 +24,11 @@ export const updateCategory = (
 export const deleteCategory = (id: string): AxiosPromise<void> => {
   return AxiosObject.delete(`/categories/${id}`);
 };
+type BalanceByCategoryType = {
+  balance: number;
+};
+export const getBalanceByCategory = (
+  data: Object
+): AxiosPromise<BalanceByCategoryType> => {
+  return AxiosObject.get("/categoryBalance", { params: data });
+};
