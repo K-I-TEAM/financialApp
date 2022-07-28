@@ -43,5 +43,7 @@ export {
   deleteCategory,
   UPDATE_CATEGORY,
   updateCategory,
+  GET_CATEGORIES_WITH_AMOUNT,
+  getCategoriesWithAmount,
 } from "./categories";
 export { SET_ERROR, setError } from "./error";

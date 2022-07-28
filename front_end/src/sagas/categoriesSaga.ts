@@ -5,6 +5,7 @@ import {
   DELETE_CATEGORY,
   UPDATE_CATEGORY,
   setError,
+  GET_CATEGORIES_WITH_AMOUNT,
 } from "../actions";
 
 import Auth from "./../store/user/auth";
@@ -12,9 +13,11 @@ import {
   createCategory,
   deleteCategory,
   updateCategory,
+  getBalanceByCategory,
 } from "../api/category";
-import { userSelector } from "../selectors";
+import { userSelector, currentDateSelector } from "../selectors";
 import { CategoryType } from "../defaultState";
+import { daysInMonth } from "../helpers";
 
 function* createCategoryWorker(payload: any): any {
   const { category, userId } = payload.category;
@@ -83,4 +86,41 @@ function* updateCategoryWorker(payload: any): any {
 
 export function* updateCategorySaga(): any {
   yield takeEvery(UPDATE_CATEGORY, updateCategoryWorker);
+}
+
+function* categoriesWithAmountWorker(): any {
+  const user = yield select(userSelector);
+  const categories = [...user.categories];
+  const date = yield select(currentDateSelector);
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  const lastDay = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    daysInMonth(date.getMonth() + 1, date.getFullYear()),
+    23,
+    59,
+    59
+  );
+  try {
+    yield Promise.all(
+      user.categories.map(async (category: CategoryType, index: number) => {
+        const res = (
+          await getBalanceByCategory({
+            startedDate: firstDay,
+            endedDate: lastDay,
+            categoryId: category.id,
+            userId: user.id,
+          })
+        ).data;
+        categories[index].amount = res.balance;
+      })
+    );
+    yield put(setUser({ ...user, categories }));
+  } catch (err) {
+    yield put(setError(err));
+  }
+}
+
+export function* categoriesWithAmountSaga(): any {
+  yield takeEvery(GET_CATEGORIES_WITH_AMOUNT, categoriesWithAmountWorker);
 }

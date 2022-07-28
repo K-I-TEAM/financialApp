@@ -20,9 +20,8 @@ import {
   setTransactionsByCategory,
   setError,
 } from "../actions";
-function daysInMonth(month: any, year: any) {
-  return new Date(year, month, 0).getDate();
-}
+import { daysInMonth } from "../helpers";
+
 function* getTransactionsWorker(): any {
   const userId = (yield select(userSelector)).id;
   const date = yield select(currentDateSelector);

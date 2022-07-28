@@ -51,5 +51,6 @@ export type CategoryType = {
   description?: string;
   color: string;
   icon: string;
+  amount?: number;
 };
 export type UserType = typeof defaultUserState.user;
