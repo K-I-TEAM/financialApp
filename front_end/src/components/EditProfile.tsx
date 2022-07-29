@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { TextField, Typography } from "@mui/material";
@@ -9,44 +9,103 @@ import { InputLabel } from "@material-ui/core";
 import { userSelector } from "../selectors";
 import { updateUser } from "../actions";
 import BasicDatePicker from "./UI/BasicDatePicker";
+import { createControl, validate, validateForm } from "../formFramework";
+import Input from "./UI/Input";
 
 const EditProfile = () => {
   const user = useSelector(userSelector);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [email, setEmail] = useState(user.email);
-  const [name, setName] = useState(user.name);
+  const createFormControls = () => {
+    return {
+      email: createControl(
+        {
+          label: "Email",
+          sx: { my: 1 },
+          fullWidth: true,
+          value: user.email,
+        },
+        {
+          required: true,
+          email: true,
+        }
+      ),
+      name: createControl(
+        {
+          label: "Name",
+          sx: { my: 1 },
+          fullWidth: true,
+          value: user.name,
+        },
+        {
+          required: true,
+        }
+      ),
+    };
+  };
+  const [formControls, setFormControls] = useState(createFormControls());
+  const [isFormValid, setIsFormValid] = useState(false);
   const [family_name, setFamily_name] = useState(user.family_name);
   const [birthdate, setBirthdate] = useState(user.birthdate);
   const [phone_number, setPhone_number] = useState(user.phone_number);
   const [gender, setGender] = useState(user.gender);
   const saveChanges = () => {
     dispatch(
-      updateUser({ email, name, family_name, birthdate, phone_number, gender })
+      updateUser({
+        email: formControls.email.value,
+        name: formControls.name.value,
+        family_name,
+        birthdate,
+        phone_number,
+        gender,
+      })
     );
     navigate("/profile");
   };
-
+  const controlChangeHandler = (
+    value: string,
+    controlName: keyof typeof formControls
+  ) => {
+    const newControl = {
+      ...formControls[controlName],
+      value: value,
+      touched: true,
+      valid: validate(value, formControls[controlName].validation),
+    };
+    setFormControls({ ...formControls, [controlName]: newControl });
+    setIsFormValid(
+      validateForm({ ...formControls, [controlName]: newControl })
+    );
+  };
+  const renderControls = () => {
+    return Object.keys(formControls).map((controlName, index) => {
+      const control = formControls[controlName as keyof typeof formControls];
+      return (
+        <Input
+          label={control.label}
+          key={index}
+          sx={control.sx}
+          value={control.value}
+          valid={control.valid}
+          shouldValidate={!!control.validation}
+          touched={control.touched}
+          onChange={(e) =>
+            controlChangeHandler(
+              (e.target as HTMLInputElement).value,
+              controlName as keyof typeof formControls
+            )
+          }
+        />
+      );
+    });
+  };
   return (
     <Box p={2} width="100%">
       <form>
         <Typography my={2} variant="h4">
           Edit Profile
         </Typography>
-        <TextField
-          sx={{ my: 1 }}
-          fullWidth
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          sx={{ my: 1 }}
-          fullWidth
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        {renderControls()}
         <TextField
           sx={{ my: 1 }}
           fullWidth
@@ -80,7 +139,12 @@ const EditProfile = () => {
             <MenuItem value={"female"}>female</MenuItem>
           </Select>
         </FormControl>
-        <Button sx={{ mt: 2 }} variant="contained" onClick={saveChanges}>
+        <Button
+          sx={{ mt: 2 }}
+          variant="contained"
+          onClick={saveChanges}
+          disabled={!isFormValid}
+        >
           Save changes
         </Button>
         <Button
