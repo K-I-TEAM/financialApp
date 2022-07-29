@@ -1,9 +1,7 @@
-import dotenv from 'dotenv';
+import 'dotenv/config.js';
 import app from './app.js';
 import { sequelize } from './database/index.js';
 import './models/index.js';
-
-dotenv.config();
 
 const port = process.env.PORT || 3001;
 const host = process.env.HOST || 'localhost';
