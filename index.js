@@ -6,6 +6,7 @@ import './models/index.js';
 dotenv.config();
 
 const port = process.env.PORT || 3001;
+const host = process.env.HOST || 'localhost';
 
 const main = async () => {
   try {
@@ -18,7 +19,7 @@ const main = async () => {
     });
 
     app.listen(port, () => {
-      console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+      console.log(`⚡️[server]: Server is running at http://${host}:${port}`);
     });
   } catch (error) {
     console.error('Unable to connect to the database:', error);
