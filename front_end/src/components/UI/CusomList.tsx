@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ListItem,
@@ -31,13 +31,13 @@ import {
   transactionsByCategorySelector,
 } from "./../../selectors";
 import IconSet from "./../IconSet";
-import { transactionsByCategory } from "../../reducers";
 
 type PropsType = {
   items: Immutable.List<TransactionType> | null;
   categories: Array<CategoryType>;
   maxAmount?: number;
   categorized?: Boolean;
+  currentDate?: Date;
 };
 
 const CustomList: React.FC<PropsType> = ({
@@ -45,6 +45,7 @@ const CustomList: React.FC<PropsType> = ({
   categories,
   maxAmount,
   categorized = false,
+  currentDate = null,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogType, setOpenDialogType] = useState("");
@@ -53,6 +54,11 @@ const CustomList: React.FC<PropsType> = ({
   const dispatch = useDispatch();
   const chosenTransaction = useSelector(transactionSelector(chosenId));
   const transactionsByCategory = useSelector(transactionsByCategorySelector);
+  useEffect(() => {
+    if (currentDate) {
+      setCategoryIdToOpen("");
+    }
+  }, [currentDate]);
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
@@ -106,7 +112,9 @@ const CustomList: React.FC<PropsType> = ({
             <div key={category.id}>
               {" "}
               <ListItemButton onClick={() => handleClickCategory(category.id)}>
-                <ListItem secondaryAction={<Typography>300$</Typography>}>
+                <ListItem
+                  secondaryAction={<Typography>{category.amount}$</Typography>}
+                >
                   <ListItemAvatar>
                     <Avatar sx={{ bgcolor: category.color }}>
                       {IconSet.map((icon: any) =>

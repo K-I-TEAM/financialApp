@@ -11,7 +11,7 @@ AxiosObject.interceptors.request.use(
       const session = await Auth.currentSession();
       config.headers = {
         "x-access-token": `${session.getIdToken().getJwtToken()}`,
-      };
+      };      
     } catch (err) {
       config.headers = {
         "x-access-token": `${sessionStorage.getItem("id_token")}`,

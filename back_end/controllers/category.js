@@ -1,12 +1,12 @@
-import { Category } from '../models/Category.js';
-import { Transaction } from '../models/Transaction.js';
-import { Op } from 'sequelize';
+import { Category } from "../models/Category.js";
+import { Transaction } from "../models/Transaction.js";
+import { Op } from "sequelize";
 
-const listCategories = async (req, res) => {
+const listCategories = async (req, res, next) => {
   const { userId } = req.query;
 
   if (!userId) {
-    return res.status(400).send('userId required');
+    return res.status(400).send("userId required");
   }
   try {
     const allCategories = await Category.findAll({
@@ -14,13 +14,13 @@ const listCategories = async (req, res) => {
         user_id: userId,
       },
     });
-    res.send(allCategories);
+    return res.send(allCategories);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const getCategory = async (req, res) => {
+const getCategory = async (req, res, next) => {
   const { id } = req.params;
   try {
     const category = await Category.findOne({
@@ -33,20 +33,20 @@ const getCategory = async (req, res) => {
       return res.status(404).json({ message: "Category doesn't exists" });
     }
 
-    res.send(category);
+    return res.send(category);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
 const getBalanceByCategory = async (req, res) => {
   try {
-    const { categoryId, userId, startedDate, endedDate } = req.body;
+    const { categoryId, userId, startedDate, endedDate } = req.query;
 
     let queryBuilder = {};
 
     if (!userId || !categoryId) {
-      return res.status(400).send('categoryId and userId are required');
+      return res.status(400).send("categoryId and userId are required");
     }
 
     queryBuilder = {
@@ -63,7 +63,7 @@ const getBalanceByCategory = async (req, res) => {
       };
     }
 
-    const balance = await Transaction.sum('amount', {
+    const balance = await Transaction.sum("amount", {
       where: queryBuilder,
     });
 
@@ -91,13 +91,13 @@ const createCategory = async (req, res) => {
       color,
       user_id: userId,
     });
-    res.send(newCategory);
+    return res.send(newCategory);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const updateCategory = async (req, res) => {
+const updateCategory = async (req, res, next) => {
   const { id } = req.params;
   const { name, description, icon, color } = req.body;
 
@@ -118,24 +118,37 @@ const updateCategory = async (req, res) => {
 
     await category.save();
 
-    res.send(category);
+    return res.send(category);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const deleteCategory = async (req, res) => {
+const deleteCategory = async (req, res, next) => {
   const { id } = req.params;
+
   try {
-    await Category.destroy({
-      where: {
-        id: id,
-      },
-    });
-    res.send(204);
+    const category = await Category.findByPk(id);
+    if (!category) {
+      return res.status(400).send(`Category do not exists`);
+    } else {
+      const result = await Category.destroy({
+        where: {
+          id: id,
+        },
+      });
+      return res.status(200).send(`Category deleted ${result}`);
+    }
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-export { listCategories, createCategory, getCategory, updateCategory, deleteCategory, getBalanceByCategory };
+export {
+  listCategories,
+  createCategory,
+  getCategory,
+  updateCategory,
+  deleteCategory,
+  getBalanceByCategory,
+};

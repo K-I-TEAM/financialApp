@@ -1,7 +1,7 @@
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import { createUser, getUserByEmail } from '../controllers/user.js';
 import { cleanToken } from '../helper/balance.js';
-import { Error } from '../helper/errorMessages.js';
+import { Error } from '../helper/errorHandler.js';
 
 const checkToken = async (req, res, next) => {
   try {
@@ -44,7 +44,7 @@ const checkToken = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 

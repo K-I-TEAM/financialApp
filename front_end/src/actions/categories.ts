@@ -11,3 +11,8 @@ export const deleteCategory = makeActionCreator(DELETE_CATEGORY, "id");
 
 export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
 export const updateCategory = makeActionCreator(UPDATE_CATEGORY, "data");
+
+export const GET_CATEGORIES_WITH_AMOUNT = "GET_CATEGORIES_WITH_AMOUNT";
+export const getCategoriesWithAmount = makeActionCreator(
+  GET_CATEGORIES_WITH_AMOUNT
+);
