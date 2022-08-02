@@ -8,18 +8,27 @@ type PropsType = {
   label: string;
   value: string | number | Date;
   changeHandler: (newValue: any) => void;
+  onError?: any;
 };
 
-const BasicDatePicker = ({ label, value, changeHandler }: PropsType) => {
+const BasicDatePicker = ({
+  label,
+  value,
+  changeHandler,
+  onError,
+}: PropsType) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
         label={label}
         value={new Date(value)}
         autoFocus
+        disableFuture
+        inputFormat="yyyy-MM-dd"
+        onError={onError}
         onChange={(newValue) => {
-          const param = newValue ? newValue.toISOString().slice(0, 10) : "";
-          changeHandler(param);
+          // const param = newValue ? newValue.toISOString().slice(0, 10) : "";
+          changeHandler(newValue);
         }}
         renderInput={(params) => <TextField {...params} />}
       />
