@@ -8,7 +8,7 @@ import {
   DialogActions,
   Button,
 } from "@material-ui/core";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,6 +20,12 @@ import {
   TransactionTypeType,
 } from "./../defaultState";
 import BasicDataPicker from "./UI/BasicDatePicker";
+import {
+  createControl,
+  validate,
+  validateForm,
+  isInvalid,
+} from "../formFramework";
 
 type PropsType = {
   open: boolean;
@@ -40,53 +46,102 @@ const Transaction: React.FC<PropsType> = ({
   chosenTransaction,
 }) => {
   const { categories, id } = useSelector(userSelector);
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentCategory, setCurrentCategory] = useState("");
-  const [currentDescription, setCurrentDescription] = useState("");
-  const [currentAmount, setCurrentAmount] = useState("");
+  const createFormControls = () => {
+    return {
+      currentDate: createControl({ shouldValidate: true }, { required: true }),
+      currentCategory: createControl(
+        { shouldValidate: true },
+        { required: true }
+      ),
+      currentDescription: createControl(
+        {
+          shouldValidate: true,
+          autoFocus: true,
+          margin: "dense",
+          fullWidth: true,
+          variant: "standard",
+          label: "Name",
+        },
+        { required: true }
+      ),
+      currentAmount: createControl(
+        {
+          shouldValidate: true,
+          type: "number",
+          margin: "dense",
+          fullWidth: true,
+          variant: "standard",
+          label: "Amount",
+        },
+        { required: true }
+      ),
+    };
+  };
+  const [formControls, setFormControls] = useState(createFormControls());
+  const [isFormValid, setIsFormValid] = useState(false);
   useEffect(() => {
     if (
       dialogType === "edit" &&
       chosenTransaction &&
       chosenTransaction.category
     ) {
-      setCurrentDate(chosenTransaction.date);
-      setCurrentCategory(chosenTransaction.category);
-      setCurrentDescription(chosenTransaction.description);
-      setCurrentAmount(chosenTransaction.amount.toString());
+      setFormControls({
+        currentDescription: {
+          ...formControls.currentDescription,
+          value: chosenTransaction.description,
+          valid: true,
+        },
+        currentAmount: {
+          ...formControls.currentAmount,
+          value: chosenTransaction.amount.toString(),
+          valid: true,
+        },
+        currentDate: {
+          ...formControls.currentDate,
+          value: chosenTransaction.date,
+          valid: true,
+        },
+        currentCategory: {
+          ...formControls.currentCategory,
+          value: chosenTransaction.category,
+          valid: true,
+        },
+      });
     } else {
-      setCurrentDate(new Date());
-      setCurrentCategory("");
-      setCurrentDescription("");
-      setCurrentAmount("");
+      setFormControls({
+        currentDescription: { ...formControls.currentDescription, value: "" },
+        currentAmount: { ...formControls.currentAmount, value: "" },
+        currentDate: {
+          ...formControls.currentDate,
+          value: new Date(),
+          valid: true,
+        },
+        currentCategory: { ...formControls.currentCategory, value: "" },
+      });
     }
   }, [dialogType, chosenTransaction]);
-  const handleChangeCategory = (event: SelectChangeEvent) => {
-    setCurrentCategory(event.target.value as string);
-  };
-  const changeNameHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setCurrentDescription(event.target.value);
-  const changeAmountHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setCurrentAmount(event.target.value);
-  const changeDateHandler = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setCurrentDate(new Date(event.target.value));
+
   const submitHandler = () => {
     dialogType === "edit" && chosenTransaction
       ? updateTransactionHandler({
-          date: currentDate,
-          category: currentCategory,
-          description: currentDescription,
-          amount: Number(currentAmount),
+          date: formControls.currentDate.value
+            ? formControls.currentDate.value.toISOString().slice(0, 10)
+            : "",
+          category: formControls.currentCategory.value,
+          description: formControls.currentDescription.value,
+          amount: Number(formControls.currentAmount.value),
           type: chosenTransaction.type,
           id: chosenTransaction.id,
         })
       : addTransactionHandler(
           {
-            date: currentDate,
-            description: currentDescription,
+            date: formControls.currentDate.value
+              ? formControls.currentDate.value.toISOString().slice(0, 10)
+              : "",
+            description: formControls.currentDescription.value,
             type: dialogType as TransactionTypeType,
-            amount: Number(currentAmount),
-            category: currentCategory,
+            amount: Number(formControls.currentAmount.value),
+            category: formControls.currentCategory.value,
           },
           id
         );
@@ -94,6 +149,22 @@ const Transaction: React.FC<PropsType> = ({
   const deleteHandler = () => {
     deleteTransactionHandler(chosenTransaction);
   };
+  const controlChangeHandler = (
+    value: string,
+    controlName: keyof typeof formControls
+  ) => {
+    const newControl = {
+      ...formControls[controlName],
+      value: value,
+      touched: true,
+      valid: validate(value, formControls[controlName].validation),
+    };
+    setFormControls({ ...formControls, [controlName]: newControl });
+    setIsFormValid(
+      validateForm({ ...formControls, [controlName]: newControl })
+    );
+  };
+
   return (
     <>
       {" "}
@@ -102,38 +173,73 @@ const Transaction: React.FC<PropsType> = ({
         <DialogContent>
           <BasicDataPicker
             label="Date"
-            value={currentDate}
-            changeHandler={setCurrentDate}
+            value={formControls.currentDate.value}
+            changeHandler={(newValue) => {
+              const newControl = {
+                ...formControls.currentDate,
+                touched: true,
+                value: newValue,
+              };
+              setFormControls({ ...formControls, currentDate: newControl });
+              setIsFormValid(
+                validateForm({ ...formControls, currentDate: newControl })
+              );
+            }}
+            onError={(e: any) => {
+              const newControl = {
+                ...formControls.currentDate,
+                touched: true,
+                valid: !e,
+              };
+              setFormControls({ ...formControls, currentDate: newControl });
+              setIsFormValid(
+                validateForm({ ...formControls, currentDate: newControl })
+              );
+            }}
           />
           <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="name"
+            autoFocus={formControls.currentDescription.autoFocus}
+            margin={formControls.currentDescription.margin}
+            label={formControls.currentDescription.label}
             type="text"
-            fullWidth
-            variant="standard"
-            value={currentDescription}
-            onChange={changeNameHandler}
+            error={isInvalid(formControls.currentDescription)}
+            helperText={
+              isInvalid(formControls.currentDescription)
+                ? "Incorrect data"
+                : null
+            }
+            fullWidth={formControls.currentDescription.fullWidth}
+            variant={formControls.currentDescription.variant}
+            value={formControls.currentDescription.value}
+            onChange={(e) =>
+              controlChangeHandler(e.target.value, "currentDescription")
+            }
           />
           <TextField
-            margin="dense"
-            id="amount"
-            label="Amount"
-            type="number"
-            fullWidth
-            variant="standard"
-            value={currentAmount}
-            onChange={changeAmountHandler}
+            margin={formControls.currentAmount.margin}
+            label={formControls.currentAmount.label}
+            type={formControls.currentAmount.type}
+            fullWidth={formControls.currentAmount.fullWidth}
+            variant={formControls.currentAmount.variant}
+            value={formControls.currentAmount.value}
+            error={isInvalid(formControls.currentAmount)}
+            helperText={
+              isInvalid(formControls.currentAmount) ? "Incorrect data" : null
+            }
+            onChange={(e) =>
+              controlChangeHandler(e.target.value, "currentAmount")
+            }
           />
           <FormControl fullWidth variant="standard" sx={{ mt: 1 }}>
             <InputLabel id="demo-simple-select-label">Category</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={currentCategory}
+              value={formControls.currentCategory.value}
               label="Category"
-              onChange={handleChangeCategory}
+              onChange={(e) =>
+                controlChangeHandler(e.target.value, "currentCategory")
+              }
             >
               {categories.map((category: CategoryType) => (
                 <MenuItem key={category.id} value={category.id}>
@@ -147,7 +253,9 @@ const Transaction: React.FC<PropsType> = ({
           {dialogType === "edit" ? (
             <Button onClick={deleteHandler}>Delete</Button>
           ) : null}
-          <Button onClick={submitHandler}>Submit</Button>
+          <Button disabled={!isFormValid} onClick={submitHandler}>
+            Submit
+          </Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </Dialog>
