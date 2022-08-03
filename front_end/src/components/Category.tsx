@@ -18,6 +18,12 @@ import Select from "@mui/material/Select";
 import { CategoryType } from "../defaultState";
 import IconSet from "./IconSet";
 import ColorPicker from "./UI/ColorPicker";
+import {
+  createControl,
+  validate,
+  validateForm,
+  isInvalid,
+} from "../formFramework";
 
 type PropsType = {
   open: boolean;
@@ -27,18 +33,54 @@ type PropsType = {
 };
 
 const Category = ({ open, handleClose, handleSubmit, category }: PropsType) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [icon, setIcon] = useState("");
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState("#B56666");
+  const createFormControls = () => {
+    return {
+      description: createControl({ shouldValidate: true }, { required: true }),
+      icon: createControl({ shouldValidate: true }, { required: true }),
+      name: createControl({ shouldValidate: true }, { required: true }),
+    };
+  };
+  const [formControls, setFormControls] = useState(createFormControls());
+  const [isFormValid, setIsFormValid] = useState(false);
   useEffect(() => {
     if (category) {
-      setDescription(category.description as string);
-      setIcon(category.icon);
       setColor(category.color);
-      setName(category.name);
+      setFormControls({
+        name: {
+          ...formControls.name,
+          value: category.name,
+          valid: true,
+        },
+        description: {
+          ...formControls.description,
+          value: category.description,
+          valid: true,
+        },
+        icon: {
+          ...formControls.icon,
+          value: category.icon,
+          valid: true,
+        },
+      });
     }
   }, [category]);
+  const controlChangeHandler = (
+    value: string,
+    controlName: keyof typeof formControls
+  ) => {
+    const newControl = {
+      ...formControls[controlName],
+      value: value,
+      touched: true,
+      valid: validate(value, formControls[controlName].validation),
+    };
+    setFormControls({ ...formControls, [controlName]: newControl });
+    setIsFormValid(
+      validateForm({ ...formControls, [controlName]: newControl })
+    );
+  };
+
   return (
     <>
       <Dialog open={open} onClose={handleClose} disableEnforceFocus>
@@ -47,31 +89,37 @@ const Category = ({ open, handleClose, handleSubmit, category }: PropsType) => {
           <ColorPicker color={color} handler={setColor} />
           <TextField
             margin="dense"
-            id="name"
             label="Name"
+            error={isInvalid(formControls.name)}
+            helperText={isInvalid(formControls.name) ? "Incorrect data" : null}
             type="text"
             fullWidth
             variant="standard"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formControls.name.value}
+            onChange={(e) => controlChangeHandler(e.target.value, "name")}
           />
           <TextField
             margin="dense"
-            id="description"
             label="Description"
+            error={isInvalid(formControls.description)}
+            helperText={
+              isInvalid(formControls.description) ? "Incorrect data" : null
+            }
             type="text"
             fullWidth
             variant="standard"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={formControls.description.value}
+            onChange={(e) =>
+              controlChangeHandler(e.target.value, "description")
+            }
           />
           <FormControl fullWidth sx={{ my: 2 }}>
             <InputLabel id="icon-set-checkbox-label">Icon</InputLabel>
             <Select
               labelId="icon-set-checkbox-label"
               id="icon-set-checkbox"
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
+              value={formControls.icon.value}
+              onChange={(e) => controlChangeHandler(e.target.value, "icon")}
               input={<OutlinedInput label="Icon" />}
             >
               {IconSet.map((icon) => (
@@ -91,11 +139,25 @@ const Category = ({ open, handleClose, handleSubmit, category }: PropsType) => {
         <DialogActions>
           <Button
             variant="contained"
+            disabled={!isFormValid}
             onClick={() => {
               if (category) {
-                handleSubmit({ name, color, icon, description }, category.id);
+                handleSubmit(
+                  {
+                    name: formControls.name.value,
+                    color,
+                    icon: formControls.icon.value,
+                    description: formControls.description.value,
+                  },
+                  category.id
+                );
               } else {
-                handleSubmit({ name, color, icon, description });
+                handleSubmit({
+                  name: formControls.name.value,
+                  color,
+                  icon: formControls.icon.value,
+                  description: formControls.description.value,
+                });
               }
               handleClose();
             }}
