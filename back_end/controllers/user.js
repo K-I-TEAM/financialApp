@@ -1,7 +1,6 @@
 import { User } from '../models/User.js';
 
 const listUsers = async (_req, res, next) => {
-  console.log('list');
   try {
     const allUsers = await User.findAll();
     return res.send(allUsers);
