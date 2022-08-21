@@ -1,11 +1,8 @@
-import dotenv from 'dotenv';
 import app from './app.js';
 import { sequelize } from './database/index.js';
 import './models/index.js';
 
-dotenv.config();
-
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 const main = async () => {
   try {
