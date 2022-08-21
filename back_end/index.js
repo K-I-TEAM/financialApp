@@ -5,7 +5,7 @@ import './models/index.js';
 
 dotenv.config();
 
-const port = process.env.DB_PORT || 3001;
+const port = process.env.DB_PORT || 5000;
 
 const main = async () => {
   try {
